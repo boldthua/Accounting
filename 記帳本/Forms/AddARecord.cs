@@ -64,7 +64,7 @@ namespace 記帳本
             //ORM => Object Relaction Mapping  用物件操作資料
             //Library?
 
-            AccountingModel anItem = new AccountingModel();
+            ExpenseModel anItem = new ExpenseModel();
             anItem.time = dateTimePicker1.Value.ToString("yyyy-MM-dd");
             anItem.money = textBox1.Text;
             anItem.catagory = comboBox1.Text;
@@ -79,7 +79,7 @@ namespace 記帳本
             pictureBox2.Image.Save(picture2Path);
             anItem.picture2 = picture2Path;
 
-            CSVLibrary.CSVHelper.Write<AccountingModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv", anItem, true);
+            CSVLibrary.CSVHelper.Write<ExpenseModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv", anItem, true);
             MessageBox.Show("已儲存");
 
         }

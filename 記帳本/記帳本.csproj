@@ -51,8 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppData.cs" />
+    <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
+    <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
-    <Compile Include="Expense.cs" />
+    <Compile Include="ExpenseModel.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,7 +85,6 @@
     <Compile Include="ImageForm.Designer.cs">
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Item.cs" />
     <Compile Include="NavBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
