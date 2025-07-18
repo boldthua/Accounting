@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using 記帳本.Attributes;
+using System.Timers;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace 記帳本
@@ -21,38 +24,48 @@ namespace 記帳本
     [Order(1)]
     public partial class Accounting : Form
     {
+        long previousMemoryUsed = 0;
+        long previousPrivateMemoryUsed = 0;
+        System.Timers.Timer timer = null;
         public Accounting()
         {
             InitializeComponent();
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
+
         }
         List<ExpenseModel> list;
         Queue<Bitmap> bitmaps = new Queue<Bitmap>();
         private void button1_Click(object sender, EventArgs e)
         {
+            Action action = showDataGridView;
+            button1_Debounce(action, 5000);
+        }
+
+        private void button1_Debounce(Action callback, int delay)
+        {
+            if (timer != null)  // 表示是delay時間內的重覆點擊
+            {
+                timer.Stop();
+                timer.Dispose();
+                timer = null;
+            }
+
+            timer = new System.Timers.Timer(delay);
+            timer.AutoReset = false;
+            timer.Elapsed += (sender, e) =>
+            {
+                this.BeginInvoke(callback);
+                timer.Dispose();
+                timer = null;
+            };
+            timer.Start();
+        }
 
 
-
-
-
-
-            showDataGridView();
-            // 解決重複跳出的問題
-            // 增加一個刪除column 可刪除該列資料
-
-            //HW:
-            //1. 完成圖片欄位的插入，能正常顯示每一筆中的兩個圖片
-            //2. 對圖片點擊兩下後能顯示完整圖片
-
-
-            //DataGridView 組成:
-            //直行(Column)橫列(Row)單一格(Cell)
-            //DataGridColumn 作為資料的每一個欄位 => DataGridTextBoxColumn
-            //DataGridRow 做為每一筆資料
-            //DataGridCell 填充每一筆資料的每一個欄位的值 => DataGridTextBoxCell
-
-            //dataGridView1.Rows[1].Cells[3].Value = 123;
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -67,12 +80,11 @@ namespace 記帳本
 
                     string picture1Path = list[e.RowIndex].picture1;
                     string picture2Path = list[e.RowIndex].picture2;
-
                     this.dataGridView1.Rows[e.RowIndex].Cells
                         .OfType<DataGridViewImageCell>()
                         .Select(x => (Bitmap)x.Value)
                         .ToList()
-                        .ForEach(x => x.Dispose());
+                        .ForEach(x => x?.Dispose());
                     this.dataGridView1.DataSource = null;
                     this.dataGridView1.Columns.Clear();
                     File.Delete(picture1Path);
@@ -137,11 +149,13 @@ namespace 記帳本
             dataGridView1.Columns.Clear();
             //TODO: 這裡應該可以先不用寫這行
 
-            //GC.Collect();
 
-            //bitmaps.Clear();
+            while (bitmaps.Count > 0)
+            {
+                bitmaps.Dequeue().Dispose();
+            }
             // 0709 把所有bitmap貯存起來再一起回收
-            // 找20張 高清風景照 > 20mb
+            GC.Collect();
 
             list = CSVLibrary.CSVHelper.Read<ExpenseModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv");
             dataGridView1.DataSource = list;
@@ -149,7 +163,6 @@ namespace 記帳本
 
             foreach (PropertyInfo property in typeof(ExpenseModel).GetProperties())
             {
-
                 var attributes = property.GetCustomAttributes();
                 if (attributes.Count() < 1)
                     continue;
@@ -186,7 +199,9 @@ namespace 記帳本
                 Name = "trashCan",
                 ImageLayout = DataGridViewImageCellLayout.Zoom,
             };
-            trashCanColumn.DefaultCellStyle.NullValue = new Bitmap(@"C:\Users\User\source\repos\記帳本\記帳本\trashCan.jpg");
+            Bitmap trashPicture = new Bitmap(@"C:\Users\User\source\repos\記帳本\記帳本\trashCan.jpg");
+            bitmaps.Append(trashPicture);
+            trashCanColumn.DefaultCellStyle.NullValue = new Bitmap(trashPicture);
 
             dataGridView1.Columns.Add(trashCanColumn);
 
@@ -201,8 +216,9 @@ namespace 記帳本
                     {
                         string cellName = imageCell.OwningColumn.Name.Replace("ImageBox", "");
                         string imagePath = dataGridView1.Rows[i].Cells[cellName].Value.ToString();
-                        Bitmap picture = new Bitmap(imagePath);
+                        Bitmap picture = new Bitmap(imagePath); // 這行最浪費
                         dataGridView1.Rows[i].Cells[cellName + "ImageBox"].Value = picture;
+                        bitmaps.Append(picture);
                     }
 
                     if (cell is DataGridViewComboBoxCell comboBoxCell)
@@ -212,9 +228,29 @@ namespace 記帳本
                     }
                     // 0711 再看一次
                     // 0711 處理 oom 的問題 
-
                 }
+            }
+            //CheckMemory();
+        }
+        public void CheckMemory()
+        {
+            using (Process currentProcess = Process.GetCurrentProcess())
+            {
+                long memoryUsed = currentProcess.WorkingSet64; // 實際使用的物理記憶體
+                long privateMemory = currentProcess.PrivateMemorySize64; // 私有記憶體
+
+                // 將記憶體使用量轉換為 MB 並顯示
+                string message = $"當前記憶體使用量 (Working Set): {memoryUsed / 1024 / 1024} MB\n" +
+                                $"私有記憶體使用量: {privateMemory / 1024 / 1024} MB\n" +
+                                $"記憶體較上次訊息時增加了 {memoryUsed / 1024 / 1024 - previousMemoryUsed} MB\n" +
+                                $"私有記憶體較上次訊息時增加了 {privateMemory / 1024 / 1024 - previousPrivateMemoryUsed} MB";
+                previousMemoryUsed = memoryUsed / 1024 / 1024;
+                previousPrivateMemoryUsed = privateMemory / 1024 / 1024;
+                MessageBox.Show(message, "記憶體使用量");
             }
         }
     }
+
+    // 0715 研究timer
+    // 三種c#
 }

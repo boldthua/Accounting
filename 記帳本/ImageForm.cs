@@ -20,6 +20,12 @@ namespace 記帳本
             // SizeMode > StretchImage
             pictureBox1.Image = Image.FromFile(imagePath);
 
+
+        }
+
+        private void ImageForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            pictureBox1.Image.Dispose();
         }
     }
 }

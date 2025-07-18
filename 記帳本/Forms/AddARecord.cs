@@ -44,8 +44,8 @@ namespace 記帳本
             DialogResult dialogResult = openFileDialog.ShowDialog();
             if (dialogResult == DialogResult.OK)
             {
-
                 PictureBox pictureBox = sender as PictureBox;
+                pictureBox.Image.Dispose();
                 pictureBox.Image = Image.FromFile(openFileDialog.FileName);
                 string imageLocation = openFileDialog.FileName;
                 if (pictureBox.Name == pictureBox1.Name)
@@ -81,7 +81,10 @@ namespace 記帳本
 
             CSVLibrary.CSVHelper.Write<ExpenseModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv", anItem, true);
             MessageBox.Show("已儲存");
-
+            pictureBox1.Image.Dispose();
+            pictureBox2.Image.Dispose();
+            pictureBox1.Image = Image.FromFile("C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg");
+            pictureBox2.Image = Image.FromFile("C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg");
         }
 
         private void textBox1_Leave(object sender, EventArgs e)
