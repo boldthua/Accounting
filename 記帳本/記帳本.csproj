@@ -55,6 +55,7 @@
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
     <Compile Include="ExpenseModel.cs" />
+    <Compile Include="Utility\FormExtension.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>
     </Compile>

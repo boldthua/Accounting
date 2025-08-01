@@ -26,7 +26,6 @@ namespace 記帳本
     {
         long previousMemoryUsed = 0;
         long previousPrivateMemoryUsed = 0;
-        System.Timers.Timer timer = null;
         public Accounting()
         {
             InitializeComponent();
@@ -34,38 +33,12 @@ namespace 記帳本
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
 
         }
-        List<ExpenseModel> list;
+        List<ExpenseModel> list = new List<ExpenseModel>();
         Queue<Bitmap> bitmaps = new Queue<Bitmap>();
         private void button1_Click(object sender, EventArgs e)
         {
-            Action action = showDataGridView;
-            button1_Debounce(action, 5000);
-        }
 
-        private void button1_Debounce(Action callback, int delay)
-        {
-            if (timer != null)  // 表示是delay時間內的重覆點擊
-            {
-                timer.Stop();
-                timer.Dispose();
-                timer = null;
-            }
-
-            timer = new System.Timers.Timer(delay);
-            timer.AutoReset = false;
-            timer.Elapsed += (sender, e) =>
-            {
-                this.BeginInvoke(callback);
-                timer.Dispose();
-                timer = null;
-            };
-            timer.Start();
-        }
-
-
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            throw new NotImplementedException();
+            this.DebounceTime(showDataGridView, 1000);
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -100,7 +73,8 @@ namespace 記帳本
             }
             if (dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell cell)
             {
-                string imagePath = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 5].Value.ToString();
+                string imagePath = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 5]
+                    .Value.ToString().Replace("w40_", "");
                 ImageForm imageForm = new ImageForm(imagePath);
                 imageForm.Show();
                 return;
@@ -145,10 +119,18 @@ namespace 記帳本
 
         void showDataGridView()
         {
+            list.Clear();
+            TimeSpan diff = dateTimePicker2.Value - dateTimePicker1.Value;
+            int dayLasting = diff.Days; // 5
+
+            for (int i = 0; i <= dayLasting; i++)
+            {
+                string documentName = dateTimePicker1.Value.AddDays(i).ToString("yyyy-MM-dd");
+                list.AddRange(CSVLibrary.CSVHelper.Read<ExpenseModel>($@"C:\Users\User\source\repos\記帳本\記帳本\Datas\{documentName}\record.csv"));
+            }
             dataGridView1.DataSource = null;
             dataGridView1.Columns.Clear();
             //TODO: 這裡應該可以先不用寫這行
-
 
             while (bitmaps.Count > 0)
             {
@@ -157,7 +139,6 @@ namespace 記帳本
             // 0709 把所有bitmap貯存起來再一起回收
             GC.Collect();
 
-            list = CSVLibrary.CSVHelper.Read<ExpenseModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv");
             dataGridView1.DataSource = list;
             dataGridView1.Columns["time"].ReadOnly = true;
 
@@ -249,8 +230,10 @@ namespace 記帳本
                 MessageBox.Show(message, "記憶體使用量");
             }
         }
-    }
 
-    // 0715 研究timer
-    // 三種c#
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
 }
