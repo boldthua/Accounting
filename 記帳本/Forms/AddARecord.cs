@@ -10,12 +10,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using 記帳本.Attributes;
+using static 記帳本.Contracts.AddRecordContract;
 
 namespace 記帳本
 {
     [DisplayName("記一筆")]
     [Order(3)]
-    public partial class AddARecord : Form
+    public partial class AddARecord : Form, IAddView
     {
         string picture1Location = "C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg";
         string picture2Location = "C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg";
@@ -24,6 +25,9 @@ namespace 記帳本
         {
             InitializeComponent();
 
+
+            // AppDataPresenter.GetComboBoxDatas();
+            // 
             comboBox1.DataSource = AppData.catagory;
             comboBox2.DataSource = AppData.food;
             comboBox3.DataSource = AppData.recipient;
@@ -31,6 +35,12 @@ namespace 記帳本
             pictureBox2.Image = Image.FromFile(@picture2Location);
 
         }
+        // public void RenderComboBoxDatas(ComboBoxData data){
+        //
+        //   comboBox1.DataSource = data.catagory;
+        //   comboBox2.DataSource = data.food;
+        //   comboBox3.DataSource = data.recipient;
+        // }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -166,6 +176,12 @@ namespace 記帳本
                 }
             }
             return null;
+        }
+
+        public void UpLoadResponse(bool result)
+        {
+
+            MessageBox.Show("已儲存");
         }
     }
 }

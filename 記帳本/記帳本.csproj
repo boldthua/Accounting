@@ -38,6 +38,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -54,7 +55,11 @@
     <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
-    <Compile Include="ExpenseModel.cs" />
+    <Compile Include="Contracts\AddRecordContract.cs" />
+    <Compile Include="Forms\ExpenseModel.cs" />
+    <Compile Include="Repositories\IRecordRepository.cs" />
+    <Compile Include="Repositories\Models\RecordModel.cs" />
+    <Compile Include="Repositories\RecordRepository.cs" />
     <Compile Include="Utility\FormExtension.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>
