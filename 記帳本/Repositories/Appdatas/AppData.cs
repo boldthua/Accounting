@@ -27,6 +27,5 @@ namespace 記帳本
             { "樂", entertainment },
             { "對象", recipient }
         };
-
     }
 }

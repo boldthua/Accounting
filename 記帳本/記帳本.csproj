@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSVLibrary">
-      <HintPath>..\..\CSVLibrary\CSVLibrary\bin\Debug\CSVLibrary.dll</HintPath>
+      <HintPath>..\..\..\CSVLibrary\CSVLibrary\bin\Debug\CSVLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -51,12 +51,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppData.cs" />
+    <Compile Include="Repositories\Appdatas\AppData.cs" />
     <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
     <Compile Include="Contracts\AddRecordContract.cs" />
     <Compile Include="Forms\ExpenseModel.cs" />
+    <Compile Include="Repositories\Appdatas\CategoryDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\ClothDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\EducationDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\EntertainmentDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\FoodDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\IRecipinetDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\ISubCategoryDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\ICategoryDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\LivingDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\RecipientDataRepository.cs" />
+    <Compile Include="Repositories\Appdatas\TransportaiongDataRepository.cs" />
     <Compile Include="Repositories\IRecordRepository.cs" />
     <Compile Include="Repositories\Models\RecordModel.cs" />
     <Compile Include="Repositories\RecordRepository.cs" />

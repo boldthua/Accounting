@@ -16,6 +16,7 @@ namespace 記帳本.Contracts
         public interface IAddPresenter
         {
             void UpLoad(ExpenseModel model);
+            // 還要向reipository要List<string>來當comboBox的資料
         }
     }
 }
