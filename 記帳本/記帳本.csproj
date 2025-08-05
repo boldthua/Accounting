@@ -51,38 +51,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Repositories\Appdatas\AppData.cs" />
     <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
     <Compile Include="Contracts\AddRecordContract.cs" />
+    <Compile Include="Contracts\Models\ComboBoxData.cs" />
     <Compile Include="Forms\ExpenseModel.cs" />
-    <Compile Include="Repositories\Appdatas\CategoryDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\ClothDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\EducationDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\EntertainmentDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\FoodDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\IRecipinetDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\ISubCategoryDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\ICategoryDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\LivingDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\RecipientDataRepository.cs" />
-    <Compile Include="Repositories\Appdatas\TransportaiongDataRepository.cs" />
+    <Compile Include="Presenters\AddPresenter.cs" />
+    <Compile Include="Repositories\CategoryDataRepository.cs" />
+    <Compile Include="Repositories\ICategoryRepository.cs" />
     <Compile Include="Repositories\IRecordRepository.cs" />
+    <Compile Include="Repositories\Models\Category.cs" />
     <Compile Include="Repositories\Models\RecordModel.cs" />
     <Compile Include="Repositories\RecordRepository.cs" />
     <Compile Include="Utility\FormExtension.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Account.Designer.cs">
-      <DependentUpon>Account.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\AddARecord.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\AddARecord.Designer.cs">
       <DependentUpon>AddARecord.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Account.Designer.cs">
+      <DependentUpon>Account.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ChartAnalysis.cs">
       <SubType>Form</SubType>
@@ -117,9 +110,6 @@
     <EmbeddedResource Include="Forms\Accounting.resx">
       <DependentUpon>Accounting.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AddARecord.resx">
-      <DependentUpon>AddARecord.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ChartAnalysis.resx">
       <DependentUpon>ChartAnalysis.cs</DependentUpon>
     </EmbeddedResource>
@@ -150,6 +140,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="trashCan.jpg" />
+    <Content Include="UpLoad.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

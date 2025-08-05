@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace 記帳本.Repositories.Appdatas
 {
-    internal interface IRecipinetDataRepository
+    internal interface ICategoryRepository
     {
-        List<string> GetRecipinets();
+        List<string> GetCategories();
+
+        List<string> GetSubcategories(string category);
+
+        List<string> GetRecipients();
     }
 }

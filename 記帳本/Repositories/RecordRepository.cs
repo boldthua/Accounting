@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSVLibrary;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -27,7 +28,7 @@ namespace 記帳本.Repositories
                 Directory.CreateDirectory(path);
             }
 
-            CSVLibrary.CSVHelper.Write<RecordModel>(Path.Combine(savePath, "record.csv"), model, true);
+            CSVHelper.Write<RecordModel>(Path.Combine(savePath, "record.csv"), model, true);
 
             return true;
         }
@@ -37,7 +38,7 @@ namespace 記帳本.Repositories
             List<RecordModel> list = new List<RecordModel>();
 
             string documentName = date.ToString("yyyy-MM-dd");
-            list.AddRange(CSVLibrary.CSVHelper.Read<RecordModel>(Path.Combine(path + documentName, "record.csv")));
+            list.AddRange(CSVHelper.Read<RecordModel>(Path.Combine(path + documentName, "record.csv")));
 
             return list;
         }

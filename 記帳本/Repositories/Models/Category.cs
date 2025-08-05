@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace 記帳本.Repositories.Appdatas
 {
-    internal interface ICategoryDataRepository
+    internal class Category
     {
-        List<string> GetCategories(); // 取得所有主類別
+        public string Name { get; set; }
+        public string[] content { get; set; }
     }
 }
