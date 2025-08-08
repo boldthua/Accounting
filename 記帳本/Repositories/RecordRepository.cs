@@ -12,7 +12,7 @@ using 記帳本.Repositories.Models;
 
 namespace 記帳本.Repositories
 {
-    internal class RecordRepository : IRecordRepository
+    public class RecordRepository : IRecordRepository
     {
         string path { get; set; }
         public RecordRepository()

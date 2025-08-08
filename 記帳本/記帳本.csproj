@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSVLibrary">
-      <HintPath>..\..\..\CSVLibrary\CSVLibrary\bin\Debug\CSVLibrary.dll</HintPath>
+      <HintPath>..\..\CSVLibrary\CSVLibrary\bin\Debug\CSVLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -54,9 +54,11 @@
     <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
+    <Compile Include="Contracts\AccoutingContract.cs" />
     <Compile Include="Contracts\AddRecordContract.cs" />
     <Compile Include="Contracts\Models\ComboBoxData.cs" />
-    <Compile Include="Forms\ExpenseModel.cs" />
+    <Compile Include="Contracts\Models\DTOs\RecordDTO.cs" />
+    <Compile Include="Contracts\Models\ExpenseModel.cs" />
     <Compile Include="Presenters\AddPresenter.cs" />
     <Compile Include="Repositories\CategoryDataRepository.cs" />
     <Compile Include="Repositories\ICategoryRepository.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="Repositories\Models\Category.cs" />
     <Compile Include="Repositories\Models\RecordModel.cs" />
     <Compile Include="Repositories\RecordRepository.cs" />
+    <Compile Include="Utility\CompressImageTool.cs" />
     <Compile Include="Utility\FormExtension.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>

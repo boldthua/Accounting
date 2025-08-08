@@ -9,7 +9,9 @@ namespace 記帳本.Repositories
 {
     //IRecordRepository recordRepository.GetRecords(date)
     //IRecordRepository recordRepository.GetRecords(start,end)
-    internal interface IRecordRepository
+    //RecordDTO => Record
+    //ExpenseModel <= RecordDTO <=Record
+    public interface IRecordRepository
     {
         // 丟東西給我存
         bool AddRecord(RecordModel model);

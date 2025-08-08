@@ -7,19 +7,17 @@ using 記帳本.Repositories.Appdatas;
 
 namespace 記帳本.Contracts.Models
 {
-    internal class ComboBoxData
+    public class ComboBoxData
     {
-        List<string> category { get; set; }
-        List<string> item { get; set; }
-        List<string> recipient { get; set; }
+        public List<string> category { get; set; }
+        public List<string> item { get; set; }
+        public List<string> recipient { get; set; }
 
-        public ComboBoxData(ICategoryRepository dataRepository, string comboBox1_SelectedIndexChanged)
+        public ComboBoxData(List<string> category, List<string> item, List<string> recipient)
         {
-            category = dataRepository.GetCategories();
-
-            item = dataRepository.GetSubcategories(comboBox1_SelectedIndexChanged);
-
-            recipient = dataRepository.GetRecipients();
+            this.category = category;
+            this.item = item;
+            this.recipient = recipient;
         }
 
     }

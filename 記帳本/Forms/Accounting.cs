@@ -11,12 +11,14 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using 記帳本.Attributes;
-using System.Timers;
+using 記帳本.Contracts;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static 記帳本.Contracts.AccoutingContract;
 
 namespace 記帳本
 {
@@ -95,8 +97,8 @@ namespace 記帳本
                 if (e.ColumnIndex == dataGridView1.Columns["catagoryComboBox"].Index)
                 {
                     DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex + 1];
-                    cell.DataSource = AppData.expends[currentCat];
-                    cell.Value = AppData.expends[currentCat][0];
+                    //cell.DataSource = AppData.expends[currentCat];
+                    //cell.Value = AppData.expends[currentCat][0];
                     string relativeCell = dataGridView1.Columns[e.ColumnIndex + 1].Name.Replace("ComboBox", "");
                     Console.WriteLine(relativeCell);
                     dataGridView1.Rows[e.RowIndex].Cells[relativeCell].Value = cell.Value;
@@ -156,8 +158,8 @@ namespace 記帳本
                         Name = property.Name + "ComboBox",
                     };
                     if (property.Name != "item")
-                        comboBoxColumn.DataSource = typeof(AppData).GetField(property.Name).GetValue(null);
-                    dataGridView1.Columns.Add(comboBoxColumn);
+                        //comboBoxColumn.DataSource = typeof(AppData).GetField(property.Name).GetValue(null);
+                        dataGridView1.Columns.Add(comboBoxColumn);
                     dataGridView1.Columns[property.Name].Visible = false;
                 }
 
@@ -190,7 +192,7 @@ namespace 記帳本
             {
                 string currentCat = dataGridView1.Rows[i].Cells["catagory"].Value.ToString();
                 DataGridViewComboBoxCell itemCell = (DataGridViewComboBoxCell)dataGridView1.Rows[i].Cells["itemComboBox"];
-                itemCell.DataSource = AppData.expends[currentCat];
+                //itemCell.DataSource = AppData.expends[currentCat];
                 foreach (DataGridViewCell cell in dataGridView1.Rows[i].Cells)
                 {
                     if (cell is DataGridViewImageCell imageCell && cell.OwningColumn.Name != "trashCan")

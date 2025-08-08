@@ -1,6 +1,8 @@
-﻿using System;
+﻿using CSVLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -10,6 +12,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using 記帳本.Attributes;
+using 記帳本.Contracts.Models;
+using 記帳本.Contracts.Models.DTOs;
+using 記帳本.Presenters;
+using 記帳本.Repositories.Appdatas;
 using static 記帳本.Contracts.AddRecordContract;
 
 namespace 記帳本
@@ -18,34 +24,23 @@ namespace 記帳本
     [Order(3)]
     public partial class AddARecord : Form, IAddView
     {
-        string picture1Location = "C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg";
-        string picture2Location = "C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg";
+        IAddPresenter presenter { get; set; }
+
 
         public AddARecord()
         {
             InitializeComponent();
+            presenter = new AddPresenters(this);
+            presenter.GetAppDatas();
 
-
-            // AppDataPresenter.GetComboBoxDatas();
-            // 
-            comboBox1.DataSource = AppData.catagory;
-            comboBox2.DataSource = AppData.food;
-            comboBox3.DataSource = AppData.recipient;
-            pictureBox1.Image = Image.FromFile(@picture1Location);
-            pictureBox2.Image = Image.FromFile(@picture2Location);
-
+            pictureBox1.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
+            pictureBox2.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
         }
-        // public void RenderComboBoxDatas(ComboBoxData data){
-        //
-        //   comboBox1.DataSource = data.catagory;
-        //   comboBox2.DataSource = data.food;
-        //   comboBox3.DataSource = data.recipient;
-        // }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string catagory = comboBox1.SelectedItem.ToString();
-            comboBox2.DataSource = AppData.expends[catagory];
+            string category = comboBox1.SelectedItem.ToString();
+            presenter.GetSubcategories(category);
         }
 
         private void pictureBoxs_Click(object sender, EventArgs e)
@@ -59,14 +54,6 @@ namespace 記帳本
                 pictureBox.Image.Dispose();
                 pictureBox.Image = Image.FromFile(openFileDialog.FileName);
                 string imageLocation = openFileDialog.FileName;
-                if (pictureBox.Name == pictureBox1.Name)
-                {
-                    picture1Location = imageLocation;
-                }
-                else
-                {
-                    picture2Location = imageLocation;
-                }
             }
         }
 
@@ -75,43 +62,21 @@ namespace 記帳本
             //ORM => Object Relaction Mapping  用物件操作資料
             //Library?
 
-            ExpenseModel anItem = new ExpenseModel();
-            anItem.time = dateTimePicker1.Value.ToString("yyyy-MM-dd");
-            anItem.money = textBox1.Text;
-            anItem.catagory = comboBox1.Text;
-            anItem.item = comboBox2.Text;
-            anItem.recipient = comboBox3.Text;
+            RecordDTO anItem = new RecordDTO();
+            anItem.Time = dateTimePicker1.Value.ToString("yyyy-MM-dd");
+            anItem.Money = textBox1.Text;
+            anItem.Catagory = comboBox1.Text;
+            anItem.Item = comboBox2.Text;
+            anItem.Recipient = comboBox3.Text;
+            anItem.Picture1 = new Bitmap(pictureBox1.Image);
+            anItem.Picture2 = new Bitmap(pictureBox2.Image);
 
-            // 先檢查有沒有資料指定儲存日的資料夾，沒有就新增
-            string saveDay = anItem.time;
-            string path = @"C:\Users\User\source\repos\記帳本\記帳本\Datas\" + saveDay;
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            // 先指定 壓縮圖片 和 縮小圖片 的位址。
+            presenter.SaveRecord(anItem);
 
-            string picture1Path = $"{path}\\w40_{Guid.NewGuid()}.jpg";
-            string compressed1Path = picture1Path.Replace("w40_", "");
-
-            CompressPictureNSave(pictureBox1.Image, compressed1Path);
-            ResizePictureNSave(pictureBox1.Image, picture1Path);
-            anItem.picture1 = picture1Path;
-
-            string picture2Path = $"{path}\\w40_{Guid.NewGuid()}.jpg";
-            string compressed2Path = picture2Path.Replace("w40_", "");
-
-            CompressPictureNSave(pictureBox2.Image, compressed2Path);
-            ResizePictureNSave(pictureBox2.Image, picture2Path);
-            anItem.picture2 = picture2Path;
-
-            CSVLibrary.CSVHelper.Write<ExpenseModel>(Path.Combine(path, "record.csv"), anItem, true);
-
-            MessageBox.Show("已儲存");
             pictureBox1.Image.Dispose();
             pictureBox2.Image.Dispose();
-            pictureBox1.Image = Image.FromFile("C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg");
-            pictureBox2.Image = Image.FromFile("C:\\Users\\User\\source\\repos\\記帳本\\記帳本\\UpLoad.jpg");
+            pictureBox1.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
+            pictureBox2.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
         }
 
         private void textBox1_Leave(object sender, EventArgs e)
@@ -126,62 +91,21 @@ namespace 記帳本
             }
         }
 
-        public void ResizePictureNSave(Image image, string saveTo)
+        public void SaveResponse(bool result)
         {
-            Bitmap originalImage = new Bitmap(image);
-            int newWidth = 40;
-            int newHeight = (int)(originalImage.Height * ((float)newWidth / originalImage.Width));
-
-            Bitmap resizedImage = new Bitmap(newWidth, newHeight);
-            using (Graphics g = Graphics.FromImage(resizedImage))
-            {
-                g.DrawImage(originalImage, 0, 0, newWidth, newHeight);
-            }
-            resizedImage.Save(saveTo, ImageFormat.Jpeg);
-        }
-
-        public void CompressPictureNSave(Image image, string saveTo)
-        {
-            // Get a bitmap. The using statement ensures objects  
-            // are automatically disposed from memory after use.
-            ImageFormat imageFormat = image.RawFormat;
-            using (Bitmap bmp1 = new Bitmap(image))
-            {
-                // 使用 GetEncoder 獲取對應的編碼器
-                ImageCodecInfo encoder = GetEncoder(imageFormat);
-                // Create an Encoder object based on the GUID  
-                // for the Quality parameter category.  
-                System.Drawing.Imaging.Encoder myEncoder =
-                    System.Drawing.Imaging.Encoder.Quality;
-
-                // Create an EncoderParameters object.  
-                // An EncoderParameters object has an array of EncoderParameter  
-                // objects. In this case, there is only one  
-                // EncoderParameter object in the array.  
-                EncoderParameters myEncoderParameters = new EncoderParameters(1);
-                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);//品質0到100分的中間值50分
-                myEncoderParameters.Param[0] = myEncoderParameter;
-                bmp1.Save(saveTo, encoder, myEncoderParameters);
-            }
-        }
-
-        private ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-            foreach (ImageCodecInfo codec in codecs)
-            {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
-            }
-            return null;
-        }
-
-        public void UpLoadResponse(bool result)
-        {
-
             MessageBox.Show("已儲存");
+        }
+
+        public void PopulateComboBox(ComboBoxData data)
+        {
+            comboBox1.DataSource = data.category;
+            comboBox2.DataSource = data.item;
+            comboBox3.DataSource = data.recipient;
+        }
+
+        public void PopulateItemComboBox(List<string> items)
+        {
+            comboBox2.DataSource = items;
         }
     }
 }

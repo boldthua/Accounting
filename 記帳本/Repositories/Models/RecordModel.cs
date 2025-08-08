@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using 記帳本.Attributes;
 
 namespace 記帳本.Repositories.Models
 {
-    internal class RecordModel //DAO(Data Access Object)
+    public class RecordModel //DAO(Data Access Object)
     {
         public string Time { get; set; }
         public string Money { get; set; }
