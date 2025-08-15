@@ -10,7 +10,7 @@ using 記帳本.Attributes;
 
 namespace 記帳本
 {
-    internal class ExpenseModel
+    internal class ExpenseViewModel
     {
         [DisplayName("日期")]
         public string time { get; set; }
@@ -34,7 +34,7 @@ namespace 記帳本
         [ImageColumn]
         public string picture2 { get; set; }
 
-        public ExpenseModel(string str)
+        public ExpenseViewModel(string str)
         {
             string[] strs = str.Split(new char[] { ',' });
             this.time = strs[0];
@@ -46,7 +46,7 @@ namespace 記帳本
             this.picture2 = strs[6];
         }
 
-        public ExpenseModel()
+        public ExpenseViewModel()
         {
         }
     }

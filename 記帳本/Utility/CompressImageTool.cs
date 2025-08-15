@@ -30,7 +30,7 @@ namespace 記帳本.Utility
 
         public static Image CompressImage(Image image)
         {
-            ImageCodecInfo encoder = GetEncoder(ImageFormat.Jpeg);
+            ImageCodecInfo encoder = GetEncoder(ImageFormat.Jpeg); // encoder 可以將png 轉成Jpeg
             System.Drawing.Imaging.Encoder qualityEncoder = System.Drawing.Imaging.Encoder.Quality;
             EncoderParameters encoderParameters = new EncoderParameters(1);
             EncoderParameter qualityParameter = new EncoderParameter(qualityEncoder, 1L); // 品質設為 50

@@ -19,5 +19,9 @@ namespace 記帳本.Repositories
         List<RecordModel> GetRecords(DateTime date);
 
         List<RecordModel> GetRecords(DateTime start, DateTime end);
+
+        bool DeleteRecord(RecordModel record);
+
+        bool UpdateRecord(List<RecordModel> records);
     }
 }

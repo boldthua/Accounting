@@ -62,7 +62,7 @@ namespace 記帳本
             //ORM => Object Relaction Mapping  用物件操作資料
             //Library?
 
-            RecordDTO anItem = new RecordDTO();
+            AddRecordDTO anItem = new AddRecordDTO();
             anItem.Time = dateTimePicker1.Value.ToString("yyyy-MM-dd");
             anItem.Money = textBox1.Text;
             anItem.Catagory = comboBox1.Text;
@@ -98,7 +98,7 @@ namespace 記帳本
 
         public void PopulateComboBox(ComboBoxData data)
         {
-            comboBox1.DataSource = data.category;
+            comboBox1.DataSource = data.catagory;
             comboBox2.DataSource = data.item;
             comboBox3.DataSource = data.recipient;
         }

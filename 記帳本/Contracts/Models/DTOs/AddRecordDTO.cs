@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace 記帳本.Contracts.Models.DTOs
 {
-    public class RecordDTO
+    public class AddRecordDTO
     {
         public string Time { get; set; }
         public string Money { get; set; }

@@ -57,8 +57,10 @@
     <Compile Include="Contracts\AccoutingContract.cs" />
     <Compile Include="Contracts\AddRecordContract.cs" />
     <Compile Include="Contracts\Models\ComboBoxData.cs" />
-    <Compile Include="Contracts\Models\DTOs\RecordDTO.cs" />
-    <Compile Include="Contracts\Models\ExpenseModel.cs" />
+    <Compile Include="Contracts\Models\DTOs\ExpenseDTO.cs" />
+    <Compile Include="Contracts\Models\DTOs\AddRecordDTO.cs" />
+    <Compile Include="Contracts\Models\ExpenseViewModel.cs" />
+    <Compile Include="Presenters\AccountingPresenter.cs" />
     <Compile Include="Presenters\AddPresenter.cs" />
     <Compile Include="Repositories\CategoryDataRepository.cs" />
     <Compile Include="Repositories\ICategoryRepository.cs" />

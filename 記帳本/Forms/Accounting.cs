@@ -17,6 +17,9 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using 記帳本.Attributes;
 using 記帳本.Contracts;
+using 記帳本.Contracts.Models;
+using 記帳本.Contracts.Models.DTOs;
+using 記帳本.Presenters;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static 記帳本.Contracts.AccoutingContract;
 
@@ -24,23 +27,31 @@ namespace 記帳本
 {
     [DisplayName("記帳本")]
     [Order(1)]
-    public partial class Accounting : Form
+    public partial class Accounting : Form, IAccountingView
     {
-        long previousMemoryUsed = 0;
-        long previousPrivateMemoryUsed = 0;
+        IAccountingPresenter presenter;
+        ComboBoxData data;
+        List<string> items = new List<string>();
+        int removedIndex = -1;
+
         public Accounting()
         {
             InitializeComponent();
+            presenter = new AccountingPresenter(this);
+            presenter.GetAppDatas();
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
 
         }
-        List<ExpenseModel> list = new List<ExpenseModel>();
+        List<ExpenseViewModel> list = new List<ExpenseViewModel>();
         Queue<Bitmap> bitmaps = new Queue<Bitmap>();
         private void button1_Click(object sender, EventArgs e)
         {
 
-            this.DebounceTime(showDataGridView, 1000);
+            this.DebounceTime(() =>
+            {
+                presenter.GetRecord(dateTimePicker1.Value, dateTimePicker2.Value);
+            }, 1000);
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -52,24 +63,17 @@ namespace 記帳本
                 DialogResult result = MessageBox.Show("你確定要刪除本筆資料嗎？", "刪除資料", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
+                    removedIndex = e.RowIndex;
+                    ExpenseViewModel modelToBeDel = list[e.RowIndex];
+                    ExpenseDTO expenseDTO = new ExpenseDTO();
+                    expenseDTO.Time = modelToBeDel.time;
+                    expenseDTO.Item = modelToBeDel.item;
+                    expenseDTO.Catagory = modelToBeDel.catagory;
+                    expenseDTO.Money = modelToBeDel.money;
+                    expenseDTO.Picture1 = modelToBeDel.picture1;
+                    expenseDTO.Picture2 = modelToBeDel.picture2;
 
-                    string picture1Path = list[e.RowIndex].picture1;
-                    string picture2Path = list[e.RowIndex].picture2;
-                    this.dataGridView1.Rows[e.RowIndex].Cells
-                        .OfType<DataGridViewImageCell>()
-                        .Select(x => (Bitmap)x.Value)
-                        .ToList()
-                        .ForEach(x => x?.Dispose());
-                    this.dataGridView1.DataSource = null;
-                    this.dataGridView1.Columns.Clear();
-                    File.Delete(picture1Path);
-                    File.Delete(picture2Path);
-                    File.Delete(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv");
-
-                    list.RemoveAt(e.RowIndex);
-                    CSVLibrary.CSVHelper.Write<ExpenseModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv", list, true);
-
-                    showDataGridView();
+                    presenter.DeleteRecord(expenseDTO);
                 }
                 return;
             }
@@ -97,16 +101,27 @@ namespace 記帳本
                 if (e.ColumnIndex == dataGridView1.Columns["catagoryComboBox"].Index)
                 {
                     DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex + 1];
-                    //cell.DataSource = AppData.expends[currentCat];
-                    //cell.Value = AppData.expends[currentCat][0];
+                    presenter.GetSubcategories(currentCat);
+                    cell.DataSource = items;
+                    cell.Value = items[0];
                     string relativeCell = dataGridView1.Columns[e.ColumnIndex + 1].Name.Replace("ComboBox", "");
-                    Console.WriteLine(relativeCell);
                     dataGridView1.Rows[e.RowIndex].Cells[relativeCell].Value = cell.Value;
-                    Console.WriteLine(dataGridView1.Rows[e.RowIndex].Cells[relativeCell].GetType().Name);
                 }
             }
-            File.Delete(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv");
-            CSVLibrary.CSVHelper.Write<ExpenseModel>(@"C:\Users\User\source\repos\記帳本\記帳本\123.csv", list, true);
+            List<ExpenseDTO> updateRecords = new List<ExpenseDTO>();
+            foreach (ExpenseViewModel data in list)
+            {
+                ExpenseDTO updatedRecord = new ExpenseDTO();
+                updatedRecord.Time = data.time;
+                updatedRecord.Money = data.money;
+                updatedRecord.Catagory = data.catagory;
+                updatedRecord.Item = data.item;
+                updatedRecord.Recipient = data.recipient;
+                updatedRecord.Picture1 = data.picture1;
+                updatedRecord.Picture2 = data.picture2;
+                updateRecords.Add(updatedRecord);
+            }
+            presenter.UpdateRecord(updateRecords);
         }
 
         void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -121,30 +136,20 @@ namespace 記帳本
 
         void showDataGridView()
         {
-            list.Clear();
-            TimeSpan diff = dateTimePicker2.Value - dateTimePicker1.Value;
-            int dayLasting = diff.Days; // 5
-
-            for (int i = 0; i <= dayLasting; i++)
-            {
-                string documentName = dateTimePicker1.Value.AddDays(i).ToString("yyyy-MM-dd");
-                list.AddRange(CSVLibrary.CSVHelper.Read<ExpenseModel>($@"C:\Users\User\source\repos\記帳本\記帳本\Datas\{documentName}\record.csv"));
-            }
             dataGridView1.DataSource = null;
             dataGridView1.Columns.Clear();
-            //TODO: 這裡應該可以先不用寫這行
 
             while (bitmaps.Count > 0)
             {
                 bitmaps.Dequeue().Dispose();
             }
-            // 0709 把所有bitmap貯存起來再一起回收
+
             GC.Collect();
 
             dataGridView1.DataSource = list;
             dataGridView1.Columns["time"].ReadOnly = true;
 
-            foreach (PropertyInfo property in typeof(ExpenseModel).GetProperties())
+            foreach (PropertyInfo property in typeof(ExpenseViewModel).GetProperties())
             {
                 var attributes = property.GetCustomAttributes();
                 if (attributes.Count() < 1)
@@ -158,8 +163,8 @@ namespace 記帳本
                         Name = property.Name + "ComboBox",
                     };
                     if (property.Name != "item")
-                        //comboBoxColumn.DataSource = typeof(AppData).GetField(property.Name).GetValue(null);
-                        dataGridView1.Columns.Add(comboBoxColumn);
+                        comboBoxColumn.DataSource = typeof(ComboBoxData).GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance).GetValue(data);
+                    dataGridView1.Columns.Add(comboBoxColumn);
                     dataGridView1.Columns[property.Name].Visible = false;
                 }
 
@@ -192,7 +197,8 @@ namespace 記帳本
             {
                 string currentCat = dataGridView1.Rows[i].Cells["catagory"].Value.ToString();
                 DataGridViewComboBoxCell itemCell = (DataGridViewComboBoxCell)dataGridView1.Rows[i].Cells["itemComboBox"];
-                //itemCell.DataSource = AppData.expends[currentCat];
+                presenter.GetSubcategories(currentCat);
+                itemCell.DataSource = items;
                 foreach (DataGridViewCell cell in dataGridView1.Rows[i].Cells)
                 {
                     if (cell is DataGridViewImageCell imageCell && cell.OwningColumn.Name != "trashCan")
@@ -206,36 +212,81 @@ namespace 記帳本
 
                     if (cell is DataGridViewComboBoxCell comboBoxCell)
                     {
-                        string columnName = comboBoxCell.OwningColumn.Name.Replace("ComboBox", "");
-                        dataGridView1.Rows[i].Cells[columnName + "ComboBox"].Value = dataGridView1.Rows[i].Cells[columnName].Value;
+                        string cellName = comboBoxCell.OwningColumn.Name;
+                        string sourceColumn = comboBoxCell.OwningColumn.Name.Replace("ComboBox", "");
+                        dataGridView1.Rows[i].Cells[cellName].Value = dataGridView1.Rows[i].Cells[sourceColumn].Value;
                     }
                     // 0711 再看一次
                     // 0711 處理 oom 的問題 
                 }
             }
-            //CheckMemory();
         }
-        public void CheckMemory()
-        {
-            using (Process currentProcess = Process.GetCurrentProcess())
-            {
-                long memoryUsed = currentProcess.WorkingSet64; // 實際使用的物理記憶體
-                long privateMemory = currentProcess.PrivateMemorySize64; // 私有記憶體
 
-                // 將記憶體使用量轉換為 MB 並顯示
-                string message = $"當前記憶體使用量 (Working Set): {memoryUsed / 1024 / 1024} MB\n" +
-                                $"私有記憶體使用量: {privateMemory / 1024 / 1024} MB\n" +
-                                $"記憶體較上次訊息時增加了 {memoryUsed / 1024 / 1024 - previousMemoryUsed} MB\n" +
-                                $"私有記憶體較上次訊息時增加了 {privateMemory / 1024 / 1024 - previousPrivateMemoryUsed} MB";
-                previousMemoryUsed = memoryUsed / 1024 / 1024;
-                previousPrivateMemoryUsed = privateMemory / 1024 / 1024;
-                MessageBox.Show(message, "記憶體使用量");
+
+        public void RenderDatas(List<ExpenseDTO> records)
+        {
+            list.Clear();
+            foreach (ExpenseDTO dto in records)
+            {
+                ExpenseViewModel viewModel = new ExpenseViewModel();
+                viewModel.time = dto.Time;
+                viewModel.item = dto.Item;
+                viewModel.catagory = dto.Catagory;
+                viewModel.money = dto.Money;
+                viewModel.recipient = dto.Recipient;
+                viewModel.picture1 = dto.Picture1;
+                viewModel.picture2 = dto.Picture2;
+                list.Add(viewModel);
+            }
+            showDataGridView();
+        }
+
+        public void IsUpdateResponse(bool isUpdate)
+        {
+            if (isUpdate)
+            {
+                MessageBox.Show("本筆消費已成功更新");
+                showDataGridView();
+            }
+            else
+            {
+                MessageBox.Show("更新失敗，查無本筆資料，請重新查詢");
             }
         }
 
-        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        public void IsDeleteResponse(bool isDelete)
         {
+            if (isDelete)
+            {
+                MessageBox.Show("本筆消費已成功刪除");
+                string picture1Path = list[removedIndex].picture1;
+                string picture2Path = list[removedIndex].picture2;
+                this.dataGridView1.Rows[removedIndex].Cells
+                    .OfType<DataGridViewImageCell>()
+                    .Select(x => (Bitmap)x.Value)
+                    .ToList()
+                    .ForEach(x => x?.Dispose());
+                this.dataGridView1.DataSource = null;
+                this.dataGridView1.Columns.Clear();
 
+                list.RemoveAt(this.removedIndex);
+
+                showDataGridView();
+            }
+            else
+            {
+                MessageBox.Show("刪除失敗，查無本筆資料。");
+            }
+        }
+
+        public void PopulateComboBox(ComboBoxData data)
+        {
+            this.data = data;
+        }
+
+        public void ReceiveItems(List<string> items)
+        {
+            this.items = items;
         }
     }
 }

@@ -25,7 +25,7 @@ using Image = System.Drawing.Image;
 
 namespace 記帳本.Presenters
 {
-    internal class AddPresenters : IAddPresenter
+    public class AddPresenters : IAddPresenter
     {
         ICategoryRepository repository { get; set; }
         IRecordRepository recordRepository { get; set; }
@@ -36,7 +36,7 @@ namespace 記帳本.Presenters
             recordRepository = new RecordRepository();
             this.view = view;
         }
-        public void SaveRecord(RecordDTO modelDTO)
+        public void SaveRecord(AddRecordDTO modelDTO)
         {
             RecordModel modelRecord = new RecordModel();
 
@@ -62,21 +62,37 @@ namespace 記帳本.Presenters
             {
                 Directory.CreateDirectory(savePath1);
             }
+            // 新增micro小圖並儲存
+            Image microPic1 = CompressImageTool.ResizePicture(image1);
 
-            savePath1 = Path.Combine(savePath1, picName1);
-            compressedPic1.Save(savePath1);
-            modelRecord.Picture1 = savePath1;
+
+            string microPic1Path = Path.Combine(savePath1, "micro" + picName1);
+            microPic1.Save(microPic1Path);
+            // 儲存compressed縮圖
+            string compressedPath1 = Path.Combine(savePath1, picName1);
+            compressedPic1.Save(compressedPath1);
+            // DAO路徑給micro小圖位址
+            modelRecord.Picture1 = microPic1Path;
 
             Image image2 = modelDTO.Picture2;
             Image compressedPic2 = CompressImageTool.CompressImage(image2);
             string picName2 = $"{Guid.NewGuid()}.jpg";
             string savePath2 = ConfigurationManager.AppSettings["DocumentPath"];
-            savePath2 = Path.Combine(savePath2, modelRecord.Time, picName2);
-            compressedPic2.Save(savePath2);
-            modelRecord.Picture2 = savePath2;
+
+            string microPic2Path = Path.Combine(savePath2, saveDay, "micro" + picName2);
+            string compressedPath2 = Path.Combine(savePath2, saveDay, picName2);
+
+            Image microPic2 = CompressImageTool.ResizePicture(image2);
+            microPic2.Save(microPic2Path);
+
+            compressedPic2.Save(compressedPath2);
+            modelRecord.Picture2 = microPic2Path;
 
             bool isSuccess = recordRepository.AddRecord(modelRecord);
 
+            // todo 釋放記憶體
+
+            view.SaveResponse(isSuccess);
             // 先縮圖，然後DAO裝的是縮圖路徑
 
 

@@ -21,7 +21,7 @@ namespace 記帳本.Contracts
         public interface IAddPresenter
         {
 
-            void SaveRecord(RecordDTO record);
+            void SaveRecord(AddRecordDTO record);
             // 還要向reipository要List<string>來當comboBox的資料
 
             void GetAppDatas();
