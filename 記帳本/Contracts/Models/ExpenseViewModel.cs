@@ -34,6 +34,8 @@ namespace 記帳本
         [ImageColumn]
         public string picture2 { get; set; }
 
+        public string testtest { get; set; }
+
         public ExpenseViewModel(string str)
         {
             string[] strs = str.Split(new char[] { ',' });

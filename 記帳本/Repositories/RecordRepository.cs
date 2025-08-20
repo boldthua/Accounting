@@ -81,37 +81,33 @@ namespace 記帳本.Repositories
                 File.Delete(record.Picture1);
                 File.Delete(record.Picture2);
             }
+            string filePath = Path.Combine(fileLocation, "record.csv");
 
-            CSVHelper.Write<RecordModel>(fileLocation, records, true);
-            return false;
+            File.Delete(filePath);
+            CSVHelper.Write<RecordModel>(filePath, records, true);
+            return true;
         }
 
         public bool UpdateRecord(RecordModel record)
         {
             DateTime date = DateTime.Parse(record.Time);
-            string fileLocation = Path.Combine(ConfigurationManager.AppSettings["DocumentPath"], record.Time);
+            string fileLocation = Path.Combine(ConfigurationManager.AppSettings["DocumentPath"], record.Time, "record.csv");
 
             //撇除自己以外的所有資料
             List<RecordModel> datas = GetRecords(date);
             RecordModel data = datas.FirstOrDefault(x => x.Picture1 == record.Picture1);
-            data = record;
+            // ↑要替換掉的
+            for (int i = 0; i < datas.Count; i++)
+            {
+                if (datas[i] == data)
+                {
+                    datas[i] = record;
+                }   // ↑記憶體位置
+            }
+
+            File.Delete(fileLocation);
             CSVHelper.Write(fileLocation, datas, false);
 
-
-            string currentDate = "";
-            foreach (RecordModel record in records)
-            {
-                string filePath = Path.Combine(path, record.Time, "record.csv");
-                if (record.Time != currentDate) // 不同天表示是第一筆
-                {
-                    CSVHelper.Write<RecordModel>(filePath, record, false);
-                    currentDate = record.Time;
-                }
-                else // 表示不是當天第一筆
-                {
-                    CSVHelper.Write<RecordModel>(filePath, record, true);
-                }
-            }
             return true;
         }
     }

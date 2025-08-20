@@ -72,22 +72,19 @@ namespace 記帳本.Presenters
             view.RenderDatas(list);
         }
 
-        public void UpdateRecord(List<ExpenseDTO> records)
+        public void UpdateRecord(ExpenseDTO record)
         {
-            List<RecordModel> recordModels = new List<RecordModel>();
-            foreach (ExpenseDTO record in records)
-            {
-                RecordModel model = new RecordModel();
-                model.Time = record.Time;
-                model.Money = record.Money;
-                model.Catagory = record.Catagory;
-                model.Item = record.Item;
-                model.Recipient = record.Recipient;
-                model.Picture1 = record.Picture1;
-                model.Picture2 = record.Picture2;
-                recordModels.Add(model);
-            }
-            bool isUpdateSuccess = repository.UpdateRecord(recordModels);
+            RecordModel recordModels = new RecordModel();
+            RecordModel model = new RecordModel();
+            model.Time = record.Time;
+            model.Money = record.Money;
+            model.Catagory = record.Catagory;
+            model.Item = record.Item;
+            model.Recipient = record.Recipient;
+            model.Picture1 = record.Picture1;
+            model.Picture2 = record.Picture2;
+
+            bool isUpdateSuccess = repository.UpdateRecord(model);
             view.IsUpdateResponse(isUpdateSuccess);
         }
 

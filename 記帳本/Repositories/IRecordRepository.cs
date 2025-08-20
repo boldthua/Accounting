@@ -22,6 +22,6 @@ namespace 記帳本.Repositories
 
         bool DeleteRecord(RecordModel record);
 
-        bool UpdateRecord(List<RecordModel> records);
+        bool UpdateRecord(RecordModel record);
     }
 }

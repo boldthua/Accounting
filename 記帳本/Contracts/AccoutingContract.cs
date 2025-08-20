@@ -32,7 +32,7 @@ namespace 記帳本.Contracts
             void GetRecord(DateTime start, DateTime end);
 
             // 更新資料
-            void UpdateRecord(List<ExpenseDTO> records);
+            void UpdateRecord(ExpenseDTO records);
 
             // 刪除資料
             void DeleteRecord(ExpenseDTO recordToBeDeleted);

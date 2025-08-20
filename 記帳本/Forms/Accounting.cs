@@ -33,7 +33,8 @@ namespace 記帳本
         ComboBoxData data;
         List<string> items = new List<string>();
         int removedIndex = -1;
-
+        List<ExpenseViewModel> list = new List<ExpenseViewModel>();
+        Queue<Bitmap> bitmaps = new Queue<Bitmap>();
         public Accounting()
         {
             InitializeComponent();
@@ -42,96 +43,6 @@ namespace 記帳本
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
 
-        }
-        List<ExpenseViewModel> list = new List<ExpenseViewModel>();
-        Queue<Bitmap> bitmaps = new Queue<Bitmap>();
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-            this.DebounceTime(() =>
-            {
-                presenter.GetRecord(dateTimePicker1.Value, dateTimePicker2.Value);
-            }, 1000);
-        }
-
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            //找到圖片欄位後點擊開啟
-            //提示:創建ImageForm用來顯示完整圖片
-            if (dataGridView1.Columns[e.ColumnIndex].Name is "trashCan")
-            {
-                DialogResult result = MessageBox.Show("你確定要刪除本筆資料嗎？", "刪除資料", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    removedIndex = e.RowIndex;
-                    ExpenseViewModel modelToBeDel = list[e.RowIndex];
-                    ExpenseDTO expenseDTO = new ExpenseDTO();
-                    expenseDTO.Time = modelToBeDel.time;
-                    expenseDTO.Item = modelToBeDel.item;
-                    expenseDTO.Catagory = modelToBeDel.catagory;
-                    expenseDTO.Money = modelToBeDel.money;
-                    expenseDTO.Picture1 = modelToBeDel.picture1;
-                    expenseDTO.Picture2 = modelToBeDel.picture2;
-
-                    presenter.DeleteRecord(expenseDTO);
-                }
-                return;
-            }
-            if (dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell cell)
-            {
-                string imagePath = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 5]
-                    .Value.ToString().Replace("w40_", "");
-                ImageForm imageForm = new ImageForm(imagePath);
-                imageForm.Show();
-                return;
-            }
-
-        }
-
-        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            if (dataGridView1.CurrentCell is DataGridViewComboBoxCell)
-            {
-                string currentCat = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-
-                string originCat = dataGridView1.Columns[e.ColumnIndex].Name.Replace("ComboBox", "");
-                DataGridViewCell originCell = dataGridView1.Rows[e.RowIndex].Cells[originCat];
-                originCell.Value = currentCat;
-
-                if (e.ColumnIndex == dataGridView1.Columns["catagoryComboBox"].Index)
-                {
-                    DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex + 1];
-                    presenter.GetSubcategories(currentCat);
-                    cell.DataSource = items;
-                    cell.Value = items[0];
-                    string relativeCell = dataGridView1.Columns[e.ColumnIndex + 1].Name.Replace("ComboBox", "");
-                    dataGridView1.Rows[e.RowIndex].Cells[relativeCell].Value = cell.Value;
-                }
-            }
-            List<ExpenseDTO> updateRecords = new List<ExpenseDTO>();
-            foreach (ExpenseViewModel data in list)
-            {
-                ExpenseDTO updatedRecord = new ExpenseDTO();
-                updatedRecord.Time = data.time;
-                updatedRecord.Money = data.money;
-                updatedRecord.Catagory = data.catagory;
-                updatedRecord.Item = data.item;
-                updatedRecord.Recipient = data.recipient;
-                updatedRecord.Picture1 = data.picture1;
-                updatedRecord.Picture2 = data.picture2;
-                updateRecords.Add(updatedRecord);
-            }
-            presenter.UpdateRecord(updateRecords);
-        }
-
-        void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
-        {
-            DataGridView dataGridView = sender as DataGridView;
-            if (dataGridView.CurrentCell is DataGridViewComboBoxCell)
-            {
-                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
-                dataGridView1.EndEdit();
-            }
         }
 
         void showDataGridView()
@@ -161,11 +72,14 @@ namespace 記帳本
                     {
                         HeaderText = property.GetCustomAttribute<DisplayNameAttribute>().DisplayName,
                         Name = property.Name + "ComboBox",
+                        DataPropertyName = property.Name
                     };
                     if (property.Name != "item")
                         comboBoxColumn.DataSource = typeof(ComboBoxData).GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance).GetValue(data);
                     dataGridView1.Columns.Add(comboBoxColumn);
                     dataGridView1.Columns[property.Name].Visible = false;
+
+
                 }
 
                 if (attributes.Any(x => x is ImageColumnAttribute))
@@ -205,7 +119,9 @@ namespace 記帳本
                     {
                         string cellName = imageCell.OwningColumn.Name.Replace("ImageBox", "");
                         string imagePath = dataGridView1.Rows[i].Cells[cellName].Value.ToString();
-                        Bitmap picture = new Bitmap(imagePath); // 這行最浪費
+                        byte[] imageBytes = File.ReadAllBytes(imagePath);
+                        MemoryStream memoryStream = new MemoryStream(imageBytes);
+                        Bitmap picture = new Bitmap(memoryStream); // 這行最浪費
                         dataGridView1.Rows[i].Cells[cellName + "ImageBox"].Value = picture;
                         bitmaps.Append(picture);
                     }
@@ -239,6 +155,86 @@ namespace 記帳本
                 list.Add(viewModel);
             }
             showDataGridView();
+        }
+
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            this.DebounceTime(() =>
+            {
+                presenter.GetRecord(dateTimePicker1.Value, dateTimePicker2.Value);
+            }, 1000);
+        }
+
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //找到圖片欄位後點擊開啟
+            //提示:創建ImageForm用來顯示完整圖片
+            if (dataGridView1.Columns[e.ColumnIndex].Name is "trashCan")
+            {
+                DialogResult result = MessageBox.Show("你確定要刪除本筆資料嗎？", "刪除資料", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    removedIndex = e.RowIndex;
+                    ExpenseViewModel modelToBeDel = list[e.RowIndex];
+                    ExpenseDTO expenseDTO = new ExpenseDTO();
+                    expenseDTO.Time = modelToBeDel.time;
+                    expenseDTO.Item = modelToBeDel.item;
+                    expenseDTO.Catagory = modelToBeDel.catagory;
+                    expenseDTO.Money = modelToBeDel.money;
+                    expenseDTO.Picture1 = modelToBeDel.picture1;
+                    expenseDTO.Picture2 = modelToBeDel.picture2;
+                    expenseDTO.Recipient = modelToBeDel.recipient;
+
+                    presenter.DeleteRecord(expenseDTO);
+                }
+                return;
+            }
+            if (dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell cell)
+            {
+                string imagePath = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex - 5]
+                    .Value.ToString().Replace("w40_", "");
+                ImageForm imageForm = new ImageForm(imagePath);
+                imageForm.Show();
+                return;
+            }
+
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            Console.WriteLine(list[e.RowIndex]);
+
+            if (dataGridView1.CurrentCell is DataGridViewComboBoxCell && e.ColumnIndex == dataGridView1.Columns["catagoryComboBox"].Index)
+            {
+
+                presenter.GetSubcategories(list[e.RowIndex].catagory);
+                DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells["itemComboBox"];
+                cell.DataSource = items;
+                cell.Value = items[0];
+            }
+
+            ExpenseDTO updatedRecord = new ExpenseDTO();
+            updatedRecord.Time = list[e.RowIndex].time;
+            updatedRecord.Money = list[e.RowIndex].money;
+            updatedRecord.Catagory = list[e.RowIndex].catagory;
+            updatedRecord.Item = list[e.RowIndex].item;
+            updatedRecord.Recipient = list[e.RowIndex].recipient;
+            updatedRecord.Picture1 = list[e.RowIndex].picture1;
+            updatedRecord.Picture2 = list[e.RowIndex].picture2;
+
+            presenter.UpdateRecord(updatedRecord);
+        }
+
+        void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            DataGridView dataGridView = sender as DataGridView;
+            if (dataGridView.CurrentCell is DataGridViewComboBoxCell)
+            {
+                dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                dataGridView1.EndEdit();
+            }
         }
 
         public void IsUpdateResponse(bool isUpdate)
@@ -287,6 +283,8 @@ namespace 記帳本
         public void ReceiveItems(List<string> items)
         {
             this.items = items;
+
+
         }
     }
 }
