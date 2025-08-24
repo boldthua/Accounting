@@ -10,6 +10,7 @@ using 記帳本.Contracts.Models.DTOs;
 using 記帳本.Repositories;
 using 記帳本.Repositories.Appdatas;
 using 記帳本.Repositories.Models;
+using 記帳本.Utility;
 using static 記帳本.Contracts.AccoutingContract;
 using static 記帳本.Contracts.AddRecordContract;
 
@@ -35,14 +36,7 @@ namespace 記帳本.Presenters
             // repository.Update<dtos>;
 
             // 把ExpenseDTO 轉成 RecordModel;
-            RecordModel recordModel = new RecordModel();
-
-            recordModel.Time = recordToBeDeleted.Time;
-            recordModel.Catagory = recordToBeDeleted.Catagory;
-            recordModel.Money = recordToBeDeleted.Money;
-            recordModel.Recipient = recordToBeDeleted.Recipient;
-            recordModel.Picture1 = recordToBeDeleted.Picture1;
-            recordModel.Picture2 = recordToBeDeleted.Picture2;
+            RecordModel recordModel = Mapper.Map<ExpenseDTO, RecordModel>(recordToBeDeleted);
 
             bool isDelSeccess = repository.DeleteRecord(recordModel);
 
@@ -53,36 +47,14 @@ namespace 記帳本.Presenters
         public void GetRecord(DateTime start, DateTime end)
         {
             List<RecordModel> datas = repository.GetRecords(start, end);
-            List<ExpenseDTO> list = new List<ExpenseDTO>();
-
-
-            foreach (RecordModel record in datas)
-            {
-                ExpenseDTO viewModel = new ExpenseDTO();
-                viewModel.Time = record.Time;
-                viewModel.Item = record.Item;
-                viewModel.Catagory = record.Catagory;
-                viewModel.Recipient = record.Recipient;
-                viewModel.Money = record.Money;
-                viewModel.Picture1 = record.Picture1;
-                viewModel.Picture2 = record.Picture2;
-                list.Add(viewModel);
-            }
+            List<ExpenseDTO> list = Mapper.Map<RecordModel, ExpenseDTO>(datas) as List<ExpenseDTO>;
             // 通知view顯示
             view.RenderDatas(list);
         }
 
         public void UpdateRecord(ExpenseDTO record)
         {
-            RecordModel recordModels = new RecordModel();
-            RecordModel model = new RecordModel();
-            model.Time = record.Time;
-            model.Money = record.Money;
-            model.Catagory = record.Catagory;
-            model.Item = record.Item;
-            model.Recipient = record.Recipient;
-            model.Picture1 = record.Picture1;
-            model.Picture2 = record.Picture2;
+            RecordModel model = Mapper.Map<ExpenseDTO, RecordModel>(record);
 
             bool isUpdateSuccess = repository.UpdateRecord(model);
             view.IsUpdateResponse(isUpdateSuccess);

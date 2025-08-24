@@ -38,18 +38,12 @@ namespace 記帳本.Presenters
         }
         public void SaveRecord(AddRecordDTO modelDTO)
         {
-            RecordModel modelRecord = new RecordModel();
-
-            modelRecord.Catagory = modelDTO.Catagory;
-            modelRecord.Time = modelDTO.Time;
-            modelRecord.Item = modelDTO.Item;
-            modelRecord.Money = modelDTO.Money;
-            modelRecord.Recipient = modelDTO.Recipient;
-
-            //ICompressImage compress = CompressImageFactory.Create(xxxx);
-            //Bitmap bitmap = compress.Compress(modelRecord.Image1);
-            //IUploadFile uploadfile = UploadFileFactory.Create(UplodType.FTP);
-            //uploadfile.Upload(bitmap,filePath);
+           
+            RecordModel modelRecord = Mapper.Map<AddRecordDTO, RecordModel>(modelDTO, x =>
+            {
+                x.ForMember(a => modelDTO.Picture1, b => b.Ignore());
+                x.ForMember(a => modelDTO.Picture2, b => b.Ignore());
+            });
 
             Image image1 = modelDTO.Picture1;
             Image compressedPic1 = CompressImageTool.CompressImage(image1);
@@ -87,6 +81,10 @@ namespace 記帳本.Presenters
 
             compressedPic2.Save(compressedPath2);
             modelRecord.Picture2 = microPic2Path;
+
+
+
+
 
             bool isSuccess = recordRepository.AddRecord(modelRecord);
 

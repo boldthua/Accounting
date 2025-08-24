@@ -20,6 +20,7 @@ using 記帳本.Contracts;
 using 記帳本.Contracts.Models;
 using 記帳本.Contracts.Models.DTOs;
 using 記帳本.Presenters;
+using 記帳本.Utility;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static 記帳本.Contracts.AccoutingContract;
 
@@ -142,18 +143,9 @@ namespace 記帳本
         public void RenderDatas(List<ExpenseDTO> records)
         {
             list.Clear();
-            foreach (ExpenseDTO dto in records)
-            {
-                ExpenseViewModel viewModel = new ExpenseViewModel();
-                viewModel.time = dto.Time;
-                viewModel.item = dto.Item;
-                viewModel.catagory = dto.Catagory;
-                viewModel.money = dto.Money;
-                viewModel.recipient = dto.Recipient;
-                viewModel.picture1 = dto.Picture1;
-                viewModel.picture2 = dto.Picture2;
-                list.Add(viewModel);
-            }
+
+            list  = Mapper.Map<ExpenseDTO, ExpenseViewModel>(records) as List<ExpenseViewModel>;
+
             showDataGridView();
         }
 
@@ -178,14 +170,7 @@ namespace 記帳本
                 {
                     removedIndex = e.RowIndex;
                     ExpenseViewModel modelToBeDel = list[e.RowIndex];
-                    ExpenseDTO expenseDTO = new ExpenseDTO();
-                    expenseDTO.Time = modelToBeDel.time;
-                    expenseDTO.Item = modelToBeDel.item;
-                    expenseDTO.Catagory = modelToBeDel.catagory;
-                    expenseDTO.Money = modelToBeDel.money;
-                    expenseDTO.Picture1 = modelToBeDel.picture1;
-                    expenseDTO.Picture2 = modelToBeDel.picture2;
-                    expenseDTO.Recipient = modelToBeDel.recipient;
+                    ExpenseDTO expenseDTO = Mapper.Map<ExpenseViewModel, ExpenseDTO>(modelToBeDel);
 
                     presenter.DeleteRecord(expenseDTO);
                 }
@@ -215,14 +200,8 @@ namespace 記帳本
                 cell.Value = items[0];
             }
 
-            ExpenseDTO updatedRecord = new ExpenseDTO();
-            updatedRecord.Time = list[e.RowIndex].time;
-            updatedRecord.Money = list[e.RowIndex].money;
-            updatedRecord.Catagory = list[e.RowIndex].catagory;
-            updatedRecord.Item = list[e.RowIndex].item;
-            updatedRecord.Recipient = list[e.RowIndex].recipient;
-            updatedRecord.Picture1 = list[e.RowIndex].picture1;
-            updatedRecord.Picture2 = list[e.RowIndex].picture2;
+            ExpenseViewModel modelToBeUpdated = list[e.RowIndex];
+            ExpenseDTO updatedRecord = Mapper.Map<ExpenseViewModel, ExpenseDTO>(modelToBeUpdated);
 
             presenter.UpdateRecord(updatedRecord);
         }
@@ -283,8 +262,6 @@ namespace 記帳本
         public void ReceiveItems(List<string> items)
         {
             this.items = items;
-
-
         }
     }
 }
