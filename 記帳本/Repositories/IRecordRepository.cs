@@ -20,8 +20,8 @@ namespace 記帳本.Repositories
 
         List<RecordModel> GetRecords(DateTime start, DateTime end);
 
-        bool DeleteRecord(RecordModel record);
+        void DeleteRecord(RecordModel record);
 
-        bool UpdateRecord(RecordModel record);
+        void UpdateRecord(RecordModel record);
     }
 }

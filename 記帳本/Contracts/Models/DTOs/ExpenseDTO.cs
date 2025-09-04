@@ -19,6 +19,5 @@ namespace 記帳本.Contracts.Models.DTOs
 
         public string Picture2 { get; set; }
 
-        public string test { get; set; }
     }
 }

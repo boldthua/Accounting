@@ -14,12 +14,12 @@ namespace 記帳本.Utility
         //HW:完成
         //1.封裝版本的AutoMapper
         //2.多新增一個靜態方法，可以允許傳入IEnumerable 進行整批list轉換
-        public static TDestination Map<TSource, TDestination>(TSource source, Action<IMappingExpression<TSource,TDestination>> action = null)
+        public static TDestination Map<TSource, TDestination>(TSource source, Action<IMappingExpression<TSource, TDestination>> action = null)
         {
             var config = new MapperConfiguration(cfg =>
             {
                 IMappingExpression<TSource, TDestination> mapping = cfg.CreateMap<TSource, TDestination>();
-                if(action!=null)
+                if (action != null)
                     action.Invoke(mapping);
             });
             var mapper = config.CreateMapper();
@@ -41,6 +41,5 @@ namespace 記帳本.Utility
 
             return destinations;
         }
-
     }
 }

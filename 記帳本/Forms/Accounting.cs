@@ -33,8 +33,7 @@ namespace 記帳本
         IAccountingPresenter presenter;
         ComboBoxData data;
         List<string> items = new List<string>();
-        int removedIndex = -1;
-        List<ExpenseViewModel> list = new List<ExpenseViewModel>();
+        BindingList<ExpenseViewModel> list = null;
         Queue<Bitmap> bitmaps = new Queue<Bitmap>();
         public Accounting()
         {
@@ -43,6 +42,7 @@ namespace 記帳本
             presenter.GetAppDatas();
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
+            dataGridView1.AllowUserToAddRows = false;
 
         }
 
@@ -142,10 +142,11 @@ namespace 記帳本
 
         public void RenderDatas(List<ExpenseDTO> records)
         {
-            list.Clear();
+            list?.Clear();
 
-            list  = Mapper.Map<ExpenseDTO, ExpenseViewModel>(records) as List<ExpenseViewModel>;
+            var viewModelList = Mapper.Map<ExpenseDTO, ExpenseViewModel>(records) as List<ExpenseViewModel>;
 
+            list = new BindingList<ExpenseViewModel>(viewModelList);
             showDataGridView();
         }
 
@@ -168,11 +169,11 @@ namespace 記帳本
                 DialogResult result = MessageBox.Show("你確定要刪除本筆資料嗎？", "刪除資料", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    removedIndex = e.RowIndex;
                     ExpenseViewModel modelToBeDel = list[e.RowIndex];
+                    list.Remove(modelToBeDel);
                     ExpenseDTO expenseDTO = Mapper.Map<ExpenseViewModel, ExpenseDTO>(modelToBeDel);
-
                     presenter.DeleteRecord(expenseDTO);
+                    MessageBox.Show("資料刪除成功！");
                 }
                 return;
             }
@@ -189,11 +190,8 @@ namespace 記帳本
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            Console.WriteLine(list[e.RowIndex]);
-
             if (dataGridView1.CurrentCell is DataGridViewComboBoxCell && e.ColumnIndex == dataGridView1.Columns["catagoryComboBox"].Index)
             {
-
                 presenter.GetSubcategories(list[e.RowIndex].catagory);
                 DataGridViewComboBoxCell cell = (DataGridViewComboBoxCell)dataGridView1.Rows[e.RowIndex].Cells["itemComboBox"];
                 cell.DataSource = items;
@@ -202,8 +200,8 @@ namespace 記帳本
 
             ExpenseViewModel modelToBeUpdated = list[e.RowIndex];
             ExpenseDTO updatedRecord = Mapper.Map<ExpenseViewModel, ExpenseDTO>(modelToBeUpdated);
-
             presenter.UpdateRecord(updatedRecord);
+            MessageBox.Show("資料更新成功！");
         }
 
         void dataGridView1_CurrentCellDirtyStateChanged(object sender, EventArgs e)
@@ -213,44 +211,6 @@ namespace 記帳本
             {
                 dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 dataGridView1.EndEdit();
-            }
-        }
-
-        public void IsUpdateResponse(bool isUpdate)
-        {
-            if (isUpdate)
-            {
-                MessageBox.Show("本筆消費已成功更新");
-                showDataGridView();
-            }
-            else
-            {
-                MessageBox.Show("更新失敗，查無本筆資料，請重新查詢");
-            }
-        }
-
-        public void IsDeleteResponse(bool isDelete)
-        {
-            if (isDelete)
-            {
-                MessageBox.Show("本筆消費已成功刪除");
-                string picture1Path = list[removedIndex].picture1;
-                string picture2Path = list[removedIndex].picture2;
-                this.dataGridView1.Rows[removedIndex].Cells
-                    .OfType<DataGridViewImageCell>()
-                    .Select(x => (Bitmap)x.Value)
-                    .ToList()
-                    .ForEach(x => x?.Dispose());
-                this.dataGridView1.DataSource = null;
-                this.dataGridView1.Columns.Clear();
-
-                list.RemoveAt(this.removedIndex);
-
-                showDataGridView();
-            }
-            else
-            {
-                MessageBox.Show("刪除失敗，查無本筆資料。");
             }
         }
 

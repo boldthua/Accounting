@@ -25,8 +25,6 @@ namespace 記帳本
     public partial class AddARecord : Form, IAddView
     {
         IAddPresenter presenter { get; set; }
-
-
         public AddARecord()
         {
             InitializeComponent();

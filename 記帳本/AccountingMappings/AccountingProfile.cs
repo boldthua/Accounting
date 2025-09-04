@@ -13,7 +13,6 @@ namespace 記帳本.AccountingMappings
         public AccountingProfile()
         {
             CreateMap<ExpenseDTO, ExpenseViewModel>()
-                .ForMember(x => x.testtest, y => y.MapFrom(o => o.test))
                 .ReverseMap();
         }
     }

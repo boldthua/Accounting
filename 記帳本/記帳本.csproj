@@ -73,6 +73,7 @@
     <Compile Include="Repositories\Models\RecordModel.cs" />
     <Compile Include="Repositories\RecordRepository.cs" />
     <Compile Include="Utility\CompressImageTool.cs" />
+    <Compile Include="Utility\DataGridViewExtension.cs" />
     <Compile Include="Utility\FormExtension.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>

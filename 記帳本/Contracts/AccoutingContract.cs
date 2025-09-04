@@ -15,13 +15,6 @@ namespace 記帳本.Contracts
             // 顯示ExpenseDTO
             void RenderDatas(List<ExpenseDTO> records);
             // 顯示完整圖片
-
-            // 更新成功?
-            void IsUpdateResponse(bool isUpdateSuccess);
-
-            // 刪除成功?
-            void IsDeleteResponse(bool isDeleteSuccess);
-
             void PopulateComboBox(ComboBoxData data);
             void ReceiveItems(List<string> items);
         }

@@ -34,16 +34,11 @@ namespace 記帳本.Presenters
         {
             // 從dtos裡面挑出要刪掉的
             // repository.Update<dtos>;
-
             // 把ExpenseDTO 轉成 RecordModel;
             RecordModel recordModel = Mapper.Map<ExpenseDTO, RecordModel>(recordToBeDeleted);
-
-            bool isDelSeccess = repository.DeleteRecord(recordModel);
-
-            view.IsDeleteResponse(isDelSeccess);
+            repository.DeleteRecord(recordModel);
 
         }
-
         public void GetRecord(DateTime start, DateTime end)
         {
             List<RecordModel> datas = repository.GetRecords(start, end);
@@ -55,9 +50,7 @@ namespace 記帳本.Presenters
         public void UpdateRecord(ExpenseDTO record)
         {
             RecordModel model = Mapper.Map<ExpenseDTO, RecordModel>(record);
-
-            bool isUpdateSuccess = repository.UpdateRecord(model);
-            view.IsUpdateResponse(isUpdateSuccess);
+            repository.UpdateRecord(model);
         }
 
         public void GetAppDatas()
