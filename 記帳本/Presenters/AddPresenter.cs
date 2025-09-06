@@ -41,8 +41,8 @@ namespace 記帳本.Presenters
            
             RecordModel modelRecord = Mapper.Map<AddRecordDTO, RecordModel>(modelDTO, x =>
             {
-                x.ForMember(a => modelDTO.Picture1, b => b.Ignore());
-                x.ForMember(a => modelDTO.Picture2, b => b.Ignore());
+                //x.ForMember(a => modelDTO.Picture1, b => b.Ignore());
+                //x.ForMember(a => modelDTO.Picture2, b => b.Ignore());
             });
 
             Image image1 = modelDTO.Picture1;

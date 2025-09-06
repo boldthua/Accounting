@@ -31,8 +31,8 @@ namespace 記帳本
             presenter = new AddPresenters(this);
             presenter.GetAppDatas();
 
-            pictureBox1.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
-            pictureBox2.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
+            pictureBox1.Image = Image.FromFile(ConfigurationManager.AppSettings["UpLoad"]);
+            pictureBox2.Image = Image.FromFile(ConfigurationManager.AppSettings["UpLoad"]);
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -73,8 +73,8 @@ namespace 記帳本
 
             pictureBox1.Image.Dispose();
             pictureBox2.Image.Dispose();
-            pictureBox1.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
-            pictureBox2.Image = Image.FromFile(ConfigurationManager.AppSettings["TrashCan"]);
+            pictureBox1.Image = Image.FromFile(ConfigurationManager.AppSettings["UpLoad"]);
+            pictureBox2.Image = Image.FromFile(ConfigurationManager.AppSettings["UpLoad"]);
         }
 
         private void textBox1_Leave(object sender, EventArgs e)

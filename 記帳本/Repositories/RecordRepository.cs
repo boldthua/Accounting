@@ -58,7 +58,7 @@ namespace 記帳本.Repositories
             return list;
         }
 
-        public bool DeleteRecord(RecordModel record)
+        public void DeleteRecord(RecordModel record)
         {
             // 先找出來
             // 如果檔案空了，記得要把資料夾一併刪除
@@ -70,25 +70,22 @@ namespace 記帳本.Repositories
 
             if (records.Count == 0)
             {
-                Directory.Delete(fileLocation);
+                Directory.Delete(fileLocation, true);
+                return;
             }
-            else
-            {
-                string bigPicPath1 = record.Picture1.Replace("micro", "");
-                string bigPicPath2 = record.Picture2.Replace("micro", "");
-                File.Delete(bigPicPath1);
-                File.Delete(bigPicPath2);
-                File.Delete(record.Picture1);
-                File.Delete(record.Picture2);
-            }
+            string bigPicPath1 = record.Picture1.Replace("micro", "");
+            string bigPicPath2 = record.Picture2.Replace("micro", "");
+            File.Delete(bigPicPath1);
+            File.Delete(bigPicPath2);
+            File.Delete(record.Picture1);
+            File.Delete(record.Picture2);
             string filePath = Path.Combine(fileLocation, "record.csv");
 
             File.Delete(filePath);
             CSVHelper.Write<RecordModel>(filePath, records, true);
-            return true;
         }
 
-        public bool UpdateRecord(RecordModel record)
+        public void UpdateRecord(RecordModel record)
         {
             DateTime date = DateTime.Parse(record.Time);
             string fileLocation = Path.Combine(ConfigurationManager.AppSettings["DocumentPath"], record.Time, "record.csv");
@@ -107,8 +104,6 @@ namespace 記帳本.Repositories
 
             File.Delete(fileLocation);
             CSVHelper.Write(fileLocation, datas, false);
-
-            return true;
         }
     }
 }

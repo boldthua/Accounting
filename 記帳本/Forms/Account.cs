@@ -21,5 +21,26 @@ namespace 記帳本
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string sqlQuery = "SELECT * FROM user_selections WHERE 1=1";
+            bool anyZone = false;
+            bool anyPrice = false;
+            bool anyType = false;
+            bool anyArea = false;
+            bool anyFloor = false;
+            bool anyEqip = false;
+            foreach(CheckBox checkbox in this.Controls)
+            {
+                if (checkbox.Tag =="Zone" )
+                {
+                    if (anyZone) 
+                        continue;
+                    if (checkbox.Text == "不限" )
+                }
+            }
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Diagnostics;
@@ -21,7 +22,6 @@ using 記帳本.Contracts.Models;
 using 記帳本.Contracts.Models.DTOs;
 using 記帳本.Presenters;
 using 記帳本.Utility;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static 記帳本.Contracts.AccoutingContract;
 
 namespace 記帳本
@@ -63,50 +63,13 @@ namespace 記帳本
 
             foreach (PropertyInfo property in typeof(ExpenseViewModel).GetProperties())
             {
-                var attributes = property.GetCustomAttributes();
-                if (attributes.Count() < 1)
-                    continue;
-
-                if (attributes.Any(x => x is ComboBoxColumnAttribute))
-                {
-                    DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn()
-                    {
-                        HeaderText = property.GetCustomAttribute<DisplayNameAttribute>().DisplayName,
-                        Name = property.Name + "ComboBox",
-                        DataPropertyName = property.Name
-                    };
-                    if (property.Name != "item")
-                        comboBoxColumn.DataSource = typeof(ComboBoxData).GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance).GetValue(data);
-                    dataGridView1.Columns.Add(comboBoxColumn);
-                    dataGridView1.Columns[property.Name].Visible = false;
-
-
-                }
-
-                if (attributes.Any(x => x is ImageColumnAttribute))
-                {
-                    DataGridViewImageColumn imageColumn = new DataGridViewImageColumn()
-                    {
-                        HeaderText = property.GetCustomAttribute<DisplayNameAttribute>().DisplayName,
-                        Name = property.Name + "ImageBox",
-                        ImageLayout = DataGridViewImageCellLayout.Zoom,
-                    };
-                    dataGridView1.Columns.Add(imageColumn);
-                    dataGridView1.Columns[property.Name].Visible = false;
-                }
-
+                dataGridView1.AddAdditionalColumn(property, data);
             }
-            DataGridViewImageColumn trashCanColumn = new DataGridViewImageColumn()
-            {
-                HeaderText = "刪除",
-                Name = "trashCan",
-                ImageLayout = DataGridViewImageCellLayout.Zoom,
-            };
-            Bitmap trashPicture = new Bitmap(@"C:\Users\User\source\repos\記帳本\記帳本\trashCan.jpg");
+            string path = ConfigurationManager.AppSettings["TrashCan"];
+            Bitmap trashPicture = new Bitmap(path);
             bitmaps.Append(trashPicture);
-            trashCanColumn.DefaultCellStyle.NullValue = new Bitmap(trashPicture);
 
-            dataGridView1.Columns.Add(trashCanColumn);
+            dataGridView1.AddImageColumn("trashCan", trashPicture,"刪除");
 
             for (int i = 0; i <= dataGridView1.RowCount - 1; i++)
             {
@@ -114,31 +77,10 @@ namespace 記帳本
                 DataGridViewComboBoxCell itemCell = (DataGridViewComboBoxCell)dataGridView1.Rows[i].Cells["itemComboBox"];
                 presenter.GetSubcategories(currentCat);
                 itemCell.DataSource = items;
-                foreach (DataGridViewCell cell in dataGridView1.Rows[i].Cells)
-                {
-                    if (cell is DataGridViewImageCell imageCell && cell.OwningColumn.Name != "trashCan")
-                    {
-                        string cellName = imageCell.OwningColumn.Name.Replace("ImageBox", "");
-                        string imagePath = dataGridView1.Rows[i].Cells[cellName].Value.ToString();
-                        byte[] imageBytes = File.ReadAllBytes(imagePath);
-                        MemoryStream memoryStream = new MemoryStream(imageBytes);
-                        Bitmap picture = new Bitmap(memoryStream); // 這行最浪費
-                        dataGridView1.Rows[i].Cells[cellName + "ImageBox"].Value = picture;
-                        bitmaps.Append(picture);
-                    }
-
-                    if (cell is DataGridViewComboBoxCell comboBoxCell)
-                    {
-                        string cellName = comboBoxCell.OwningColumn.Name;
-                        string sourceColumn = comboBoxCell.OwningColumn.Name.Replace("ComboBox", "");
-                        dataGridView1.Rows[i].Cells[cellName].Value = dataGridView1.Rows[i].Cells[sourceColumn].Value;
-                    }
-                    // 0711 再看一次
-                    // 0711 處理 oom 的問題 
-                }
+                DataGridViewRow row = dataGridView1.Rows[i];
+                DataGridViewExtension.RowSetting(row, bitmaps);               
             }
         }
-
 
         public void RenderDatas(List<ExpenseDTO> records)
         {
