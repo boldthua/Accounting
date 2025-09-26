@@ -15,7 +15,7 @@ namespace 記帳本.Contracts
             // 顯示ExpenseDTO
             void RenderDatas(List<ExpenseDTO> records);
             // 顯示完整圖片
-            void PopulateComboBox(ComboBoxData data);
+            void PopulateComboBox(CategoryData data);
             void ReceiveItems(List<string> items);
         }
 

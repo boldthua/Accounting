@@ -34,5 +34,7 @@ namespace 記帳本
         {
             form.Invoke(action);
         }
+
+
     }
 }

@@ -14,7 +14,7 @@ namespace 記帳本.Contracts
         {
             void SaveResponse(bool result);
 
-            void PopulateComboBox(ComboBoxData data);
+            void PopulateComboBox(CategoryData data);
             void PopulateItemComboBox(List<string> items);
         }
 

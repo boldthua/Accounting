@@ -94,7 +94,7 @@ namespace 記帳本
             MessageBox.Show("已儲存");
         }
 
-        public void PopulateComboBox(ComboBoxData data)
+        public void PopulateComboBox(CategoryData data)
         {
             comboBox1.DataSource = data.catagory;
             comboBox2.DataSource = data.item;

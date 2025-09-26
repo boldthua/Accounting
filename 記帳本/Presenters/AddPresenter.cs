@@ -101,7 +101,7 @@ namespace 記帳本.Presenters
             List<string> item = repository.GetSubcategories(majorCat[0]);
             List<string> recipient = repository.GetRecipients();
 
-            ComboBoxData data = new ComboBoxData(majorCat, item, recipient);
+            CategoryData data = new CategoryData(majorCat, item, recipient);
             view.PopulateComboBox(data);
         }
 

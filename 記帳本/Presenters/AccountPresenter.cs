@@ -11,34 +11,25 @@ using 記帳本.Repositories;
 using 記帳本.Repositories.Appdatas;
 using 記帳本.Repositories.Models;
 using 記帳本.Utility;
-using static 記帳本.Contracts.AccoutingContract;
 using static 記帳本.Contracts.AddRecordContract;
-
+using static 記帳本.Contracts.AccoutContract;
 namespace 記帳本.Presenters
 {
 
-    public class AccountingPresenter : IAccountingPresenter
+    public class AccountPresenter : IAccountPresenter
     {
-        IAccountingView view;
+        IAccountView view;
         IRecordRepository repository;
         ICategoryRepository categoryRepository { get; set; }
 
 
-        public AccountingPresenter(IAccountingView view)
+        public AccountPresenter(IAccountView view)
         {
             categoryRepository = new CategoryRepository();
             repository = new RecordRepository();
             this.view = view;
         }
-        public void DeleteRecord(ExpenseDTO recordToBeDeleted)
-        {
-            // 從dtos裡面挑出要刪掉的
-            // repository.Update<dtos>;
-            // 把ExpenseDTO 轉成 RecordModel;
-            RecordModel recordModel = Mapper.Map<ExpenseDTO, RecordModel>(recordToBeDeleted);
-            repository.DeleteRecord(recordModel);
 
-        }
         public void GetRecord(DateTime start, DateTime end)
         {
             List<RecordModel> datas = repository.GetRecords(start, end);
@@ -47,27 +38,17 @@ namespace 記帳本.Presenters
             view.RenderDatas(list);
         }
 
-        public void UpdateRecord(ExpenseDTO record)
-        {
-            RecordModel model = Mapper.Map<ExpenseDTO, RecordModel>(record);
-            repository.UpdateRecord(model);
-        }
-
         public void GetAppDatas()
         {
             List<string> majorCat = categoryRepository.GetCategories();
-            List<string> item = categoryRepository.GetSubcategories(majorCat[0]);
+            Dictionary<string, List<string>> items = majorCat
+                .ToDictionary(
+                x => x,
+                x => categoryRepository.GetSubcategories(x)
+                );
             List<string> recipient = categoryRepository.GetRecipients();
-
-            CategoryData data = new CategoryData(majorCat, item, recipient);
-            view.PopulateComboBox(data);
+            AllItemData data = new AllItemData(majorCat, items, recipient);
+            view.PopulateMainCheckBox(data);
         }
-
-        public void GetSubcategories(string category)
-        {
-            List<string> items = categoryRepository.GetSubcategories(category);
-            view.ReceiveItems(items);
-        }
-
     }
 }

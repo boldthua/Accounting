@@ -18,7 +18,7 @@ namespace 記帳本.Utility
     {
         public static DataGridView dataGridView { get; set; }
 
-        public static void AddAdditionalColumn(this DataGridView view, PropertyInfo property, ComboBoxData data)
+        public static void AddAdditionalColumn(this DataGridView view, PropertyInfo property, CategoryData data)
         {
             var attributes = property.GetCustomAttributes();
             if (attributes.Count() < 1)
@@ -35,7 +35,7 @@ namespace 記帳本.Utility
             }
         }
 
-        public static void AddComboBoxColumn(DataGridView view, PropertyInfo property, ComboBoxData data)
+        public static void AddComboBoxColumn(DataGridView view, PropertyInfo property, CategoryData data)
         {
             DataGridViewComboBoxColumn comboBoxColumn = new DataGridViewComboBoxColumn()
             {
@@ -44,7 +44,7 @@ namespace 記帳本.Utility
                 DataPropertyName = property.Name
             };
             if (property.Name != "item")
-                comboBoxColumn.DataSource = typeof(ComboBoxData).GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance).GetValue(data);
+                comboBoxColumn.DataSource = typeof(CategoryData).GetProperty(property.Name, BindingFlags.Public | BindingFlags.Instance).GetValue(data);
             view.Columns.Add(comboBoxColumn);
             view.Columns[property.Name].Visible = false;
         }

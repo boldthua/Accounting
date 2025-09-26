@@ -32,6 +32,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.10.0.0\lib\net461\AutoMapper.dll</HintPath>
@@ -58,13 +62,16 @@
     <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
+    <Compile Include="Contracts\AccountContract.cs" />
     <Compile Include="Contracts\AccoutingContract.cs" />
     <Compile Include="Contracts\AddRecordContract.cs" />
-    <Compile Include="Contracts\Models\ComboBoxData.cs" />
+    <Compile Include="Contracts\Models\AllItemData.cs" />
+    <Compile Include="Contracts\Models\CategoryData.cs" />
     <Compile Include="Contracts\Models\DTOs\ExpenseDTO.cs" />
     <Compile Include="Contracts\Models\DTOs\AddRecordDTO.cs" />
     <Compile Include="Contracts\Models\ExpenseViewModel.cs" />
     <Compile Include="Presenters\AccountingPresenter.cs" />
+    <Compile Include="Presenters\AccountPresenter.cs" />
     <Compile Include="Presenters\AddPresenter.cs" />
     <Compile Include="Repositories\CategoryDataRepository.cs" />
     <Compile Include="Repositories\ICategoryRepository.cs" />
@@ -74,6 +81,7 @@
     <Compile Include="Repositories\RecordRepository.cs" />
     <Compile Include="Utility\CompressImageTool.cs" />
     <Compile Include="Utility\DataGridViewExtension.cs" />
+    <Compile Include="Utility\FlowLayOutPanelExtension.cs" />
     <Compile Include="Utility\FormExtension.cs" />
     <Compile Include="Forms\Account.cs">
       <SubType>Form</SubType>
@@ -139,6 +147,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

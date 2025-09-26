@@ -31,7 +31,7 @@ namespace 記帳本
     public partial class Accounting : Form, IAccountingView
     {
         IAccountingPresenter presenter;
-        ComboBoxData data;
+        CategoryData data;
         List<string> items = new List<string>();
         BindingList<ExpenseViewModel> list = null;
         Queue<Bitmap> bitmaps = new Queue<Bitmap>();
@@ -43,7 +43,6 @@ namespace 記帳本
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.CurrentCellDirtyStateChanged += dataGridView1_CurrentCellDirtyStateChanged;
             dataGridView1.AllowUserToAddRows = false;
-
         }
 
         void showDataGridView()
@@ -66,10 +65,11 @@ namespace 記帳本
                 dataGridView1.AddAdditionalColumn(property, data);
             }
             string path = ConfigurationManager.AppSettings["TrashCan"];
+            //C:\Users\User\source\repos\記帳本\記帳本\trashCan.jpg
             Bitmap trashPicture = new Bitmap(path);
             bitmaps.Append(trashPicture);
 
-            dataGridView1.AddImageColumn("trashCan", trashPicture,"刪除");
+            dataGridView1.AddImageColumn("trashCan", trashPicture, "刪除");
 
             for (int i = 0; i <= dataGridView1.RowCount - 1; i++)
             {
@@ -78,7 +78,7 @@ namespace 記帳本
                 presenter.GetSubcategories(currentCat);
                 itemCell.DataSource = items;
                 DataGridViewRow row = dataGridView1.Rows[i];
-                DataGridViewExtension.RowSetting(row, bitmaps);               
+                DataGridViewExtension.RowSetting(row, bitmaps);
             }
         }
 
@@ -156,7 +156,7 @@ namespace 記帳本
             }
         }
 
-        public void PopulateComboBox(ComboBoxData data)
+        public void PopulateComboBox(CategoryData data)
         {
             this.data = data;
         }

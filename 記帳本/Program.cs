@@ -20,7 +20,7 @@ namespace 記帳本
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Form form = SingletonForm.GetFormInstance("Accounting");
+            Form form = SingletonForm.GetFormInstance("Account");
             Application.Run(form);
         }
     }

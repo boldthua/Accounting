@@ -7,16 +7,16 @@ using 記帳本.Repositories.Appdatas;
 
 namespace 記帳本.Contracts.Models
 {
-    public class ComboBoxData
+    public class AllItemData
     {
         public List<string> catagory { get; set; }
-        public List<string> item { get; set; }
+        public Dictionary<string, List<string>> items { get; set; }
         public List<string> recipient { get; set; }
 
-        public ComboBoxData(List<string> category, List<string> item, List<string> recipient)
+        public AllItemData(List<string> category, Dictionary<string, List<string>> items, List<string> recipient)
         {
             this.catagory = category;
-            this.item = item;
+            this.items = items;
             this.recipient = recipient;
         }
 
