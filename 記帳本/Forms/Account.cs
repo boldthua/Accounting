@@ -33,7 +33,7 @@ namespace 記帳本
 
         // conditions 用來維護最終要送去給 Presenter分析的資料
         // key為 食/衣/住/行/育/樂/支付方式/對象  value為每一個類型中有勾選的項目
-        Dictionary<string, List<string>> conditions = new Dictionary<string, List<string>>();
+        List<string> conditions = new List<string>();
 
         // 用來記錄需要進行群組的分類有哪些 ex:根據吃飯(食)跟交通(行) 進行資料群組
         // 例如:想知道過去這兩個月花在吃飯跟交通的費用有多少? 但是要扣除掉幫家人/朋友請客的
@@ -81,15 +81,32 @@ namespace 記帳本
             flowLayoutPanel1.GenerateCheckboxs(data, ConditionCheckedChange, GroupCheckedChange);
         }
 
-
         public void ConditionCheckedChange(object sender, EventArgs e)
         {
-
+            CheckBox checkBox = (CheckBox)sender;
+            string condition = checkBox.Text;
+            if (checkBox.Checked)
+            {
+                conditions.Add(condition);
+            }
+            else
+            {
+                conditions.Remove(condition);
+            }
         }
 
         public void GroupCheckedChange(object sender, EventArgs e)
         {
-
+            CheckBox checkBox = (CheckBox)sender;
+            string group = checkBox.Text;
+            if (checkBox.Checked)
+            {
+                groupByList.Add(group);
+            }
+            else
+            {
+                groupByList.Remove(group);
+            }
         }
     }
 

@@ -18,7 +18,7 @@ namespace 記帳本.Utility
         public static void GenerateCheckboxs(this FlowLayoutPanel panel, AllItemData data, EventHandler ConditionCheckedChange, EventHandler GroupCheckedChange)
         {
             itemsMap = data.items;
-            FlowLayoutPanel catagoryPanel = CreateCheckBox("catagory", data.catagory, panel.Width);
+            FlowLayoutPanel catagoryPanel = CreateCheckBox("catagory", data.catagory, panel.Width, GroupCheckedChange);
 
             catagoryPanel.Controls.OfType<CheckBox>()
                                   .Where(x => x.Text != "全選")
@@ -32,23 +32,22 @@ namespace 記帳本.Utility
                 BorderStyle = BorderStyle.FixedSingle,
                 Tag = "detail",
             };
-            FlowLayoutPanel recipientPanel = CreateCheckBox("recipient", data.recipient, panel.Width);
+            FlowLayoutPanel recipientPanel = CreateCheckBox("recipient", data.recipient, panel.Width, ConditionCheckedChange);
             recipientPanel.Visible = false;
-
             panel.Controls.Add(catagoryPanel);
             panel.Controls.Add(detailPanel);
             panel.Controls.Add(recipientPanel);
 
             foreach (var itemPair in itemsMap)
             {
-                FlowLayoutPanel partPanel = CreateCheckBox(itemPair.Key, itemPair.Value, panel.Width);
+                FlowLayoutPanel partPanel = CreateCheckBox(itemPair.Key, itemPair.Value, panel.Width, ConditionCheckedChange);
                 detailPanel.Controls.Add(partPanel);
                 detailPanel.Height += partPanel.Height;
                 partPanel.Visible = false;
             }
         }
 
-        private static FlowLayoutPanel CreateCheckBox(string typeName, List<string> list, int width)
+        private static FlowLayoutPanel CreateCheckBox(string typeName, List<string> list, int width, EventHandler handler)
         {
             FlowLayoutPanel panel = new FlowLayoutPanel
             {
@@ -64,11 +63,11 @@ namespace 記帳本.Utility
             {
                 CheckBox checkBox = new CheckBox() { Text = str, Margin = new Padding(0), AutoSize = true };
                 checkBox.CheckedChanged += CheckBoxes_CheckedChanged;
+                checkBox.CheckedChanged += handler;
                 panel.Controls.Add(checkBox);
             }
             return panel;
         }
-
 
         private static void AllCheck_CheckedChanged(object sender, EventArgs e)
         {
@@ -88,7 +87,6 @@ namespace 記帳本.Utility
                     x.Checked = allCheck.Checked;
                 });
         }
-
         private static void CheckBoxes_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
@@ -143,7 +141,11 @@ namespace 記帳本.Utility
             FlowLayoutPanel recipientPanel = panels.FirstOrDefault(x => x.Tag == "recipient");
 
             bool allNotSelected = checkBox.Parent.Controls.OfType<CheckBox>().All(x => x.Checked == false);
-            ditailPanel.Controls.OfType<FlowLayoutPanel>().ToList().ForEach(x => x.Visible = x.Tag?.ToString() == checkBox.Text && checkBox.Checked);
+            var currentPanel = ditailPanel.Controls.OfType<FlowLayoutPanel>().ToList().FirstOrDefault(x => x.Tag?.ToString() == checkBox.Text);
+            currentPanel.Visible = checkBox.Checked;
+
+            if(currentPanel.Visible == false)
+                currentPanel.Controls.OfType<CheckBox>().ToList().ForEach(x => x.Checked = false);
 
             if (allNotSelected)
             {
