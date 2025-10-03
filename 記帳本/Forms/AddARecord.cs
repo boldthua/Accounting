@@ -66,6 +66,7 @@ namespace 記帳本
             anItem.Catagory = comboBox1.Text;
             anItem.Item = comboBox2.Text;
             anItem.Recipient = comboBox3.Text;
+            anItem.Payment = comboBox4.Text;
             anItem.Picture1 = new Bitmap(pictureBox1.Image);
             anItem.Picture2 = new Bitmap(pictureBox2.Image);
 
@@ -99,12 +100,14 @@ namespace 記帳本
             comboBox1.DataSource = data.catagory;
             comboBox2.DataSource = data.item;
             comboBox3.DataSource = data.recipient;
+            comboBox4.DataSource = data.payment;
         }
 
         public void PopulateItemComboBox(List<string> items)
         {
             comboBox2.DataSource = items;
         }
+
     }
 }
 // 寫入用streamWriter 讀取用 StreamReader

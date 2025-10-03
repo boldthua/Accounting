@@ -62,11 +62,13 @@
     <Compile Include="Attributes\ComboBoxColumnAttribute.cs" />
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
+    <Compile Include="Attributes\RecordAttribute.cs" />
     <Compile Include="Contracts\AccountContract.cs" />
     <Compile Include="Contracts\AccoutingContract.cs" />
     <Compile Include="Contracts\AddRecordContract.cs" />
     <Compile Include="Contracts\Models\AllItemData.cs" />
     <Compile Include="Contracts\Models\CategoryData.cs" />
+    <Compile Include="Contracts\Models\DTOs\AccountDTO.cs" />
     <Compile Include="Contracts\Models\DTOs\ExpenseDTO.cs" />
     <Compile Include="Contracts\Models\DTOs\AddRecordDTO.cs" />
     <Compile Include="Contracts\Models\ExpenseViewModel.cs" />
@@ -128,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Accounting.resx">
       <DependentUpon>Accounting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddARecord.resx">
+      <DependentUpon>AddARecord.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ChartAnalysis.resx">
       <DependentUpon>ChartAnalysis.cs</DependentUpon>

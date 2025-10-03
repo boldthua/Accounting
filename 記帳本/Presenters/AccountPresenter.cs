@@ -30,12 +30,26 @@ namespace 記帳本.Presenters
             this.view = view;
         }
 
-        public void GetRecord(DateTime start, DateTime end)
+        public void GetRecord(DateTime start, DateTime end, Dictionary<string, List<string>> conditions)
         {
+            var props = typeof(RecordModel)
+                .GetProperties()
+                //.Where(x => x.Name == "Catagory" || x.Name == "Item" || x.Name == "Recipient")
+                .ToList();
             List<RecordModel> datas = repository.GetRecords(start, end);
-            List<ExpenseDTO> list = Mapper.Map<RecordModel, ExpenseDTO>(datas) as List<ExpenseDTO>;
+
+            //var filter = datas.Where(x => props.All(y => conditions.Contains(y.GetValue(x).ToString()))).ToList();
+
+
+
+
+            //datas = datas.Where(x => group.Contains(x.Catagory)).ToList();
+            //datas = datas.Where(x => detail.Contains(x.Item)).ToList();
+            //datas = datas.Where(x => detail.Contains(x.Recipient)).ToList();
+
+            //List<AccountDTO> list = Mapper.Map<RecordModel, AccountDTO>(filter) as List<AccountDTO>;
             // 通知view顯示
-            view.RenderDatas(list);
+            //view.RenderDatas(list);
         }
 
         public void GetAppDatas()
@@ -47,7 +61,8 @@ namespace 記帳本.Presenters
                 x => categoryRepository.GetSubcategories(x)
                 );
             List<string> recipient = categoryRepository.GetRecipients();
-            AllItemData data = new AllItemData(majorCat, items, recipient);
+            List<string> payment = categoryRepository.GetPayments();
+            AllItemData data = new AllItemData(majorCat, items, recipient, payment);
             view.PopulateMainCheckBox(data);
         }
     }

@@ -38,7 +38,7 @@ namespace 記帳本.Presenters
         }
         public void SaveRecord(AddRecordDTO modelDTO)
         {
-           
+
             RecordModel modelRecord = Mapper.Map<AddRecordDTO, RecordModel>(modelDTO, x =>
             {
                 //x.ForMember(a => modelDTO.Picture1, b => b.Ignore());
@@ -82,26 +82,21 @@ namespace 記帳本.Presenters
             compressedPic2.Save(compressedPath2);
             modelRecord.Picture2 = microPic2Path;
 
-
-
-
-
             bool isSuccess = recordRepository.AddRecord(modelRecord);
 
             // todo 釋放記憶體
 
             view.SaveResponse(isSuccess);
             // 先縮圖，然後DAO裝的是縮圖路徑
-
-
         }
         public void GetAppDatas()
         {
             List<string> majorCat = repository.GetCategories();
             List<string> item = repository.GetSubcategories(majorCat[0]);
             List<string> recipient = repository.GetRecipients();
+            List<string> payment = repository.GetPayments();
 
-            CategoryData data = new CategoryData(majorCat, item, recipient);
+            CategoryData data = new CategoryData(majorCat, item, recipient, payment);
             view.PopulateComboBox(data);
         }
 

@@ -7,7 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using 記帳本.Attributes;
 using 記帳本.Contracts.Models;
+using 記帳本.Contracts.Models.DTOs;
 
 namespace 記帳本.Utility
 {
@@ -15,10 +17,22 @@ namespace 記帳本.Utility
     {
         static Dictionary<string, List<string>> itemsMap = new Dictionary<string, List<string>>();
 
-        public static void GenerateCheckboxs(this FlowLayoutPanel panel, AllItemData data, EventHandler ConditionCheckedChange, EventHandler GroupCheckedChange)
+        public static void GenerateCheckboxs(this FlowLayoutPanel panel, AllItemData data, EventHandler ConditionCheckedChange, EventHandler GroupbyCheckedChange)
         {
             itemsMap = data.items;
-            FlowLayoutPanel catagoryPanel = CreateCheckBox("catagory", data.catagory, panel.Width, GroupCheckedChange);
+            System.Windows.Forms.Label label = new System.Windows.Forms.Label() { Text = "請選擇分析方式：", AutoSize = true };
+            panel.Controls.Add(label);
+
+            var groupByList = typeof(AccountDTO).GetProperties()
+                .Where(x => x.GetCustomAttribute<RecordAttribute>() != null)
+                .Select(x => x.GetCustomAttribute<RecordAttribute>()._displayName).ToList();
+
+            FlowLayoutPanel groupPanel = CreateCheckBox("group", groupByList, panel.Width, GroupbyCheckedChange);
+            panel.Controls.Add(groupPanel);
+
+            System.Windows.Forms.Label label1 = new System.Windows.Forms.Label() { Text = "請選擇資料條件：", AutoSize = true };
+            panel.Controls.Add(label1);
+            FlowLayoutPanel catagoryPanel = CreateCheckBox("Catagory", data.catagory, panel.Width, ConditionCheckedChange);
 
             catagoryPanel.Controls.OfType<CheckBox>()
                                   .Where(x => x.Text != "全選")
@@ -28,50 +42,66 @@ namespace 記帳本.Utility
             FlowLayoutPanel detailPanel = new FlowLayoutPanel()
             {
                 Width = panel.Width - 5,
-                Height = 30,
-                BorderStyle = BorderStyle.FixedSingle,
-                Tag = "detail",
+                //Height = 30,
+                AutoSize = true,
+                //BorderStyle = BorderStyle.FixedSingle,
+                Tag = "Detail",
             };
-            FlowLayoutPanel recipientPanel = CreateCheckBox("recipient", data.recipient, panel.Width, ConditionCheckedChange);
-            recipientPanel.Visible = false;
+            FlowLayoutPanel recipientPanel = CreateCheckBox("Recipient", data.recipient, panel.Width, ConditionCheckedChange);
+            FlowLayoutPanel paymentPanel = CreateCheckBox("Payment", data.payment, panel.Width, ConditionCheckedChange);
             panel.Controls.Add(catagoryPanel);
             panel.Controls.Add(detailPanel);
             panel.Controls.Add(recipientPanel);
+            panel.Controls.Add(paymentPanel);
 
             foreach (var itemPair in itemsMap)
             {
                 FlowLayoutPanel partPanel = CreateCheckBox(itemPair.Key, itemPair.Value, panel.Width, ConditionCheckedChange);
                 detailPanel.Controls.Add(partPanel);
-                detailPanel.Height += partPanel.Height;
-                partPanel.Visible = false;
+                //detailPanel.Height += partPanel.Height;
+                detailPanel.Height = 30;
             }
+
         }
 
         private static FlowLayoutPanel CreateCheckBox(string typeName, List<string> list, int width, EventHandler handler)
         {
+            string[] types = { "Catagory", "Recipient", "Payment" };
             FlowLayoutPanel panel = new FlowLayoutPanel
             {
                 Width = width - 5,
                 Tag = typeName,
-                Height = 50,
-                BorderStyle = BorderStyle.FixedSingle,
+                Height = 40,
+                //BorderStyle = BorderStyle.FixedSingle,
             };
             CheckBox allCheck = new CheckBox() { Text = "全選", Tag = "", Margin = new Padding(0), AutoSize = true };
             allCheck.CheckedChanged += AllCheck_CheckedChanged;
             panel.Controls.Add(allCheck);
             foreach (string str in list)
             {
-                CheckBox checkBox = new CheckBox() { Text = str, Margin = new Padding(0), AutoSize = true };
+                typeName = types.Contains(typeName) ? typeName : "Item";
+                CheckBox checkBox = new CheckBox() { Text = str, Tag = typeName, Margin = new Padding(0), AutoSize = true };
                 checkBox.CheckedChanged += CheckBoxes_CheckedChanged;
                 checkBox.CheckedChanged += handler;
                 panel.Controls.Add(checkBox);
             }
+            allCheck.Checked = true;
             return panel;
         }
 
         private static void AllCheck_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox allCheck = (CheckBox)sender;
+
+            bool isAllCheckBoxesChecked = allCheck.Parent.Controls
+                                          .OfType<CheckBox>()
+                                          .Where(x => x != allCheck)
+                                          .All(x => x.Checked);
+            if (isAllCheckBoxesChecked && !allCheck.Checked)
+            {
+                allCheck.Checked = true;
+                return;
+            }
             if (allCheck.Tag?.ToString() == "被動")
             {
                 allCheck.Tag = "";
@@ -83,16 +113,16 @@ namespace 記帳本.Utility
                 .ToList()
                 .ForEach(x =>
                 {
-                    x.Tag = "被動";
+                    x.Name = "被動";
                     x.Checked = allCheck.Checked;
                 });
         }
         private static void CheckBoxes_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            if (checkBox.Tag?.ToString() == "被動")
+            if (checkBox.Name == "被動")
             {
-                checkBox.Tag = "";
+                checkBox.Name = "";
                 return;
             }
             //CheckBox allCheckBox = (CheckBox)checkBox.Parent.Controls.OfType<CheckBox>().Where(x => x.Text == "全選");
@@ -102,12 +132,16 @@ namespace 記帳本.Utility
             checkboxList = checkboxList.Where(x => x != allCheckBox).ToList();
 
             bool isSelectedAll = checkboxList.All(x => x.Checked);
-
+            bool isSelectedAny = checkboxList.Any(x => x.Checked);
             if (allCheckBox.Checked != isSelectedAll)
             {
                 allCheckBox.Tag = "被動";
                 allCheckBox.Checked = isSelectedAll;
             }    // 再想一想， 108行 
+            if (!isSelectedAny)
+                allCheckBox.Checked = true;
+
+
 
             //if (checkBox.Checked) // 動作是勾選時 檢查是否全勾 
             //{
@@ -136,26 +170,23 @@ namespace 記帳本.Utility
                              .Controls
                              .OfType<FlowLayoutPanel>()
                              .ToList()
-                             .Where(x => x.Tag != "category");
-            FlowLayoutPanel ditailPanel = panels.FirstOrDefault(x => x.Tag == "detail");
-            FlowLayoutPanel recipientPanel = panels.FirstOrDefault(x => x.Tag == "recipient");
+                             .Where(x => x.Tag != "Category");
+            FlowLayoutPanel ditailPanel = panels.FirstOrDefault(x => x.Tag == "Detail");
+            FlowLayoutPanel recipientPanel = panels.FirstOrDefault(x => x.Tag == "Recipient");
 
             bool allNotSelected = checkBox.Parent.Controls.OfType<CheckBox>().All(x => x.Checked == false);
             var currentPanel = ditailPanel.Controls.OfType<FlowLayoutPanel>().ToList().FirstOrDefault(x => x.Tag?.ToString() == checkBox.Text);
             currentPanel.Visible = checkBox.Checked;
 
-            if(currentPanel.Visible == false)
+            if (currentPanel.Visible == false)
                 currentPanel.Controls.OfType<CheckBox>().ToList().ForEach(x => x.Checked = false);
 
             if (allNotSelected)
             {
                 ditailPanel.Visible = false;
-                recipientPanel.Controls.OfType<CheckBox>().ToList().ForEach(x => x.Checked = false);
-                recipientPanel.Visible = false;
             }
             else
             {
-                recipientPanel.Visible = true;
                 ditailPanel.Visible = true;
             }
             //foreach (FlowLayoutPanel flPanel in ditailPanel.Controls)

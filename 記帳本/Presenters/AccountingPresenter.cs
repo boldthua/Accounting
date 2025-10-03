@@ -58,8 +58,8 @@ namespace 記帳本.Presenters
             List<string> majorCat = categoryRepository.GetCategories();
             List<string> item = categoryRepository.GetSubcategories(majorCat[0]);
             List<string> recipient = categoryRepository.GetRecipients();
-
-            CategoryData data = new CategoryData(majorCat, item, recipient);
+            List<string> payment = categoryRepository.GetPayments();
+            CategoryData data = new CategoryData(majorCat, item, recipient, payment);
             view.PopulateComboBox(data);
         }
 

@@ -25,6 +25,9 @@ namespace 記帳本
         [DisplayName("對象")]
         [ComboBoxColumn]
         public string recipient { get; set; }
+        [DisplayName("支付方式")]
+        [ComboBoxColumn]
+        public string payment { get; set; }
 
         [DisplayName("證明1")]
         [ImageColumn]
@@ -43,8 +46,9 @@ namespace 記帳本
             this.catagory = strs[2];
             this.item = strs[3];
             this.recipient = strs[4];
-            this.picture1 = strs[5];
-            this.picture2 = strs[6];
+            this.payment = strs[5];
+            this.picture1 = strs[6];
+            this.picture2 = strs[7];
         }
 
         public ExpenseViewModel()

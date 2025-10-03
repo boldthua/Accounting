@@ -14,6 +14,7 @@ namespace 記帳本.Contracts.Models.DTOs
         public string Catagory { get; set; }
         public string Item { get; set; }
         public string Recipient { get; set; }
+        public string Payment { get; set; }
 
         public Bitmap Picture1 { get; set; }
 

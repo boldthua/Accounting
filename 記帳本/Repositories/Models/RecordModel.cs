@@ -16,6 +16,7 @@ namespace 記帳本.Repositories.Models
         public string Catagory { get; set; }
         public string Item { get; set; }
         public string Recipient { get; set; }
+        public string Payment { get; set; }
 
         public string Picture1 { get; set; }
 
@@ -29,8 +30,9 @@ namespace 記帳本.Repositories.Models
             this.Catagory = strs[2];
             this.Item = strs[3];
             this.Recipient = strs[4];
-            this.Picture1 = strs[5];
-            this.Picture2 = strs[6];
+            this.Payment = strs[5];
+            this.Picture1 = strs[6];
+            this.Picture2 = strs[7];
         }
 
         public RecordModel()

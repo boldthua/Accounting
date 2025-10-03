@@ -47,6 +47,8 @@ namespace 記帳本
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -55,26 +57,27 @@ namespace 記帳本
             // 
             this.navBar1.BackColor = System.Drawing.Color.White;
             this.navBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.navBar1.Location = new System.Drawing.Point(0, 625);
+            this.navBar1.Location = new System.Drawing.Point(0, 642);
+            this.navBar1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.navBar1.Name = "navBar1";
-            this.navBar1.Size = new System.Drawing.Size(516, 100);
+            this.navBar1.Size = new System.Drawing.Size(543, 100);
             this.navBar1.TabIndex = 0;
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.dateTimePicker1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dateTimePicker1.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.dateTimePicker1.Location = new System.Drawing.Point(77, 59);
+            this.dateTimePicker1.Location = new System.Drawing.Point(133, 70);
             this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(408, 35);
+            this.dateTimePicker1.Size = new System.Drawing.Size(373, 35);
             this.dateTimePicker1.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label1.Location = new System.Drawing.Point(15, 70);
+            this.label1.Location = new System.Drawing.Point(33, 78);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 23);
             this.label1.TabIndex = 2;
@@ -84,7 +87,7 @@ namespace 記帳本
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label2.Location = new System.Drawing.Point(15, 114);
+            this.label2.Location = new System.Drawing.Point(33, 116);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 23);
             this.label2.TabIndex = 3;
@@ -94,7 +97,7 @@ namespace 記帳本
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label3.Location = new System.Drawing.Point(15, 259);
+            this.label3.Location = new System.Drawing.Point(32, 240);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 23);
             this.label3.TabIndex = 4;
@@ -104,7 +107,7 @@ namespace 記帳本
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label4.Location = new System.Drawing.Point(15, 210);
+            this.label4.Location = new System.Drawing.Point(33, 198);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 23);
             this.label4.TabIndex = 5;
@@ -114,7 +117,7 @@ namespace 記帳本
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label5.Location = new System.Drawing.Point(15, 161);
+            this.label5.Location = new System.Drawing.Point(32, 151);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 23);
             this.label5.TabIndex = 6;
@@ -122,43 +125,43 @@ namespace 記帳本
             // 
             // comboBox1
             // 
-            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(76, 153);
+            this.comboBox1.Location = new System.Drawing.Point(133, 148);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(409, 31);
+            this.comboBox1.Size = new System.Drawing.Size(373, 31);
             this.comboBox1.TabIndex = 8;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // comboBox2
             // 
-            this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.comboBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox2.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(76, 202);
+            this.comboBox2.Location = new System.Drawing.Point(133, 195);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(409, 31);
+            this.comboBox2.Size = new System.Drawing.Size(373, 31);
             this.comboBox2.TabIndex = 9;
             // 
             // comboBox3
             // 
-            this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.comboBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox3.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(76, 251);
+            this.comboBox3.Location = new System.Drawing.Point(133, 237);
             this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(409, 31);
+            this.comboBox3.Size = new System.Drawing.Size(373, 31);
             this.comboBox3.TabIndex = 10;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label6.Location = new System.Drawing.Point(12, 304);
+            this.label6.Location = new System.Drawing.Point(20, 330);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(113, 23);
             this.label6.TabIndex = 4;
@@ -169,7 +172,7 @@ namespace 記帳本
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label7.Location = new System.Drawing.Point(263, 304);
+            this.label7.Location = new System.Drawing.Point(298, 330);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(113, 23);
             this.label7.TabIndex = 4;
@@ -177,7 +180,7 @@ namespace 記帳本
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(16, 347);
+            this.pictureBox1.Location = new System.Drawing.Point(24, 373);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(229, 250);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -188,7 +191,7 @@ namespace 記帳本
             // pictureBox2
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.Location = new System.Drawing.Point(267, 347);
+            this.pictureBox2.Location = new System.Drawing.Point(302, 373);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(229, 250);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -200,9 +203,9 @@ namespace 記帳本
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("新細明體", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button1.Location = new System.Drawing.Point(434, 5);
+            this.button1.Location = new System.Drawing.Point(428, 12);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(56, 50);
+            this.button1.Size = new System.Drawing.Size(78, 50);
             this.button1.TabIndex = 12;
             this.button1.Text = "儲存";
             this.button1.UseVisualStyleBackColor = true;
@@ -210,18 +213,41 @@ namespace 記帳本
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(80, 110);
+            this.textBox1.Location = new System.Drawing.Point(133, 110);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(404, 25);
+            this.textBox1.Size = new System.Drawing.Size(366, 25);
             this.textBox1.TabIndex = 14;
             this.textBox1.Leave += new System.EventHandler(this.textBox1_Leave);
+            // 
+            // comboBox4
+            // 
+            this.comboBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox4.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Location = new System.Drawing.Point(133, 284);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(373, 31);
+            this.comboBox4.TabIndex = 16;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("新細明體", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label8.Location = new System.Drawing.Point(14, 287);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(102, 23);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "支付方式";
             // 
             // AddARecord
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(516, 725);
+            this.ClientSize = new System.Drawing.Size(543, 742);
+            this.Controls.Add(this.comboBox4);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox2);
@@ -266,5 +292,7 @@ namespace 記帳本
         private PictureBox pictureBox2;
         private Button button1;
         private TextBox textBox1;
+        private ComboBox comboBox4;
+        private Label label8;
     }
 }

@@ -12,12 +12,14 @@ namespace 記帳本.Contracts.Models
         public List<string> catagory { get; set; }
         public List<string> item { get; set; }
         public List<string> recipient { get; set; }
+        public List<string> payment { get; set; }
 
-        public CategoryData(List<string> category, List<string> item, List<string> recipient)
+        public CategoryData(List<string> category, List<string> item, List<string> recipient, List<string> payment)
         {
             this.catagory = category;
             this.item = item;
             this.recipient = recipient;
+            this.payment = payment;
         }
 
     }

@@ -13,5 +13,6 @@ namespace 記帳本.Repositories.Appdatas
         List<string> GetSubcategories(string category);
 
         List<string> GetRecipients();
+        List<string> GetPayments();
     }
 }
