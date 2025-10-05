@@ -30,7 +30,7 @@ namespace 記帳本.Presenters
             this.view = view;
         }
 
-        public void GetRecord(DateTime start, DateTime end, Dictionary<string, List<string>> conditions)
+        public void GetRecord(DateTime start, DateTime end, List<string> groupByList ,Dictionary<string, List<string>> conditions)
         {
             var props = typeof(RecordModel)
                 .GetProperties()

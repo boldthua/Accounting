@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -93,53 +94,46 @@ namespace 記帳本.Utility
         {
             CheckBox allCheck = (CheckBox)sender;
 
-            bool isAllCheckBoxesChecked = allCheck.Parent.Controls
-                                          .OfType<CheckBox>()
-                                          .Where(x => x != allCheck)
-                                          .All(x => x.Checked);
-            if (isAllCheckBoxesChecked && !allCheck.Checked)
+            if(allCheck.Checked)
             {
-                allCheck.Checked = true;
-                return;
+                allCheck.Enabled = false;
+                allCheck.ForeColor = Color.LightGray;
+
+                allCheck.Parent.Controls
+                                .OfType<CheckBox>()
+                                .Where(x => x != allCheck)
+                                .ToList()
+                                .ForEach(x =>
+                                {
+                                    x.Checked = true;
+                                });
             }
-            if (allCheck.Tag?.ToString() == "被動")
+            else
             {
-                allCheck.Tag = "";
-                return;
+                allCheck.Enabled = true;
+                allCheck.ForeColor = Color.Black;
             }
-            allCheck.Parent.Controls
-                .OfType<CheckBox>()
-                .Where(x => x != allCheck)
-                .ToList()
-                .ForEach(x =>
-                {
-                    x.Name = "被動";
-                    x.Checked = allCheck.Checked;
-                });
+
         }
         private static void CheckBoxes_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            if (checkBox.Name == "被動")
-            {
-                checkBox.Name = "";
-                return;
-            }
-            //CheckBox allCheckBox = (CheckBox)checkBox.Parent.Controls.OfType<CheckBox>().Where(x => x.Text == "全選");
 
             var checkboxList = checkBox.Parent.Controls.OfType<CheckBox>().ToList();
             CheckBox allCheckBox = checkboxList.First(x => x.Text == "全選");
             checkboxList = checkboxList.Where(x => x != allCheckBox).ToList();
 
+            // 後面全勾 checkall就勾 後面全沒勾 checkall照樣勾
             bool isSelectedAll = checkboxList.All(x => x.Checked);
-            bool isSelectedAny = checkboxList.Any(x => x.Checked);
-            if (allCheckBox.Checked != isSelectedAll)
+            bool isNoSelected = checkboxList.All(x => !x.Checked);
+            if (isSelectedAll || isNoSelected)
             {
-                allCheckBox.Tag = "被動";
-                allCheckBox.Checked = isSelectedAll;
-            }    // 再想一想， 108行 
-            if (!isSelectedAny)
                 allCheckBox.Checked = true;
+            }
+            else
+            {
+                allCheckBox.Checked = false;
+            }
 
 
 
