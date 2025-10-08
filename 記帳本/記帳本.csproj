@@ -68,6 +68,7 @@
     <Compile Include="Contracts\AddRecordContract.cs" />
     <Compile Include="Contracts\Models\AllItemData.cs" />
     <Compile Include="Contracts\Models\CategoryData.cs" />
+    <Compile Include="Contracts\Models\DTOs\AccountAnalyzeDTO.cs" />
     <Compile Include="Contracts\Models\DTOs\AccountDTO.cs" />
     <Compile Include="Contracts\Models\DTOs\ExpenseDTO.cs" />
     <Compile Include="Contracts\Models\DTOs\AddRecordDTO.cs" />

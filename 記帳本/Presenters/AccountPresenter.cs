@@ -30,26 +30,30 @@ namespace 記帳本.Presenters
             this.view = view;
         }
 
-        public void GetRecord(DateTime start, DateTime end, List<string> groupByList ,Dictionary<string, List<string>> conditions)
+        public void GetRecord(DateTime start, DateTime end, List<string> groupByList, Dictionary<string, List<string>> conditions)
         {
             var props = typeof(RecordModel)
                 .GetProperties()
-                //.Where(x => x.Name == "Catagory" || x.Name == "Item" || x.Name == "Recipient")
                 .ToList();
+            var filterProps = props.Where(x => conditions.ContainsKey(x.Name)).ToList();
             List<RecordModel> datas = repository.GetRecords(start, end);
-
-            //var filter = datas.Where(x => props.All(y => conditions.Contains(y.GetValue(x).ToString()))).ToList();
-
-
+            var allValues = conditions.Values.SelectMany(x => x).ToList();
+            var filter = datas.Where(x => filterProps.All(y => allValues.Contains(y.GetValue(x).ToString()))).ToList();
 
 
-            //datas = datas.Where(x => group.Contains(x.Catagory)).ToList();
-            //datas = datas.Where(x => detail.Contains(x.Item)).ToList();
-            //datas = datas.Where(x => detail.Contains(x.Recipient)).ToList();
+            var groupByProps = props.Where(x => groupByList.Contains(x.Name)).ToList(); // payment,receipent
 
-            //List<AccountDTO> list = Mapper.Map<RecordModel, AccountDTO>(filter) as List<AccountDTO>;
-            // 通知view顯示
-            //view.RenderDatas(list);
+
+            var renderData = filter.GroupBy(x =>
+            {
+                return string.Join(",", groupByProps.Select(prop => prop.GetValue(x).ToString()));
+            }).Select(x => new AccountAnalyzeDTO
+            {
+                GroupByName = x.Key,
+                Money = x.Sum(y => int.Parse(y.Money))
+            }).ToList();
+
+            view.RenderDatas(renderData);
         }
 
         public void GetAppDatas()

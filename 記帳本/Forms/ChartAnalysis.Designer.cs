@@ -31,8 +31,7 @@ namespace 記帳本
         /// </summary>
         private void InitializeComponent()
         {
-            this.navBar1 = new NavBar();
-
+            this.navBar1 = new 記帳本.NavBar();
             this.SuspendLayout();
             // 
             // navBar1
@@ -48,7 +47,7 @@ namespace 記帳本
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(524, 725);
+            this.ClientSize = new System.Drawing.Size(533, 725);
             this.Controls.Add(this.navBar1);
             this.Name = "ChartAnalysis";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

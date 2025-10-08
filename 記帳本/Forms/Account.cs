@@ -27,7 +27,7 @@ namespace 記帳本
     public partial class Account : Form, IAccountView
     {
         IAccountPresenter presenter;
-        List<AccountDTO> records;
+        List<AccountAnalyzeDTO> records;
         List<FlowLayoutPanel> itemFlPanelList = new List<FlowLayoutPanel>();
         FlowLayoutPanel recipientPanel = new FlowLayoutPanel();
 
@@ -49,7 +49,7 @@ namespace 記帳本
         }
 
         #region Todo 待開發
-        public void RenderDatas(List<AccountDTO> records)
+        public void RenderDatas(List<AccountAnalyzeDTO> records)
         {
             this.records = records;
             showDataGridView();
@@ -67,7 +67,7 @@ namespace 記帳本
         {
             this.DebounceTime(() =>
             {
-                presenter.GetRecord(dateTimePicker1.Value, dateTimePicker2.Value, conditions);
+                presenter.GetRecord(dateTimePicker1.Value, dateTimePicker2.Value, groupByList, conditions);
             }, 1000);
         }
 
@@ -86,9 +86,9 @@ namespace 記帳本
 
             if (checkBox.Checked)
             {
-                if (conditions.Keys.Contains(keyName))
+                if (conditions.TryGetValue(keyName, out List<string> conditionList) && !conditionList.Contains(checkBox.Text))
                 {
-                    conditions[keyName].Add(checkBox.Text);
+                    conditionList.Add(checkBox.Text);
                 }
                 else
                 {
@@ -97,10 +97,7 @@ namespace 記帳本
             }
             else
             {
-                if (conditions[keyName].Count() > 1)
-                    conditions[keyName].Remove(checkBox.Text);
-                else
-                    conditions.Remove(keyName);
+                conditions[keyName].Remove(checkBox.Text);
             }
         }
 
@@ -115,9 +112,6 @@ namespace 記帳本
                                           return false;
                                       return attr._displayName == checkBox.Text;
                                   }).Name;
-
-
-
             if (checkBox.Checked)
             {
                 groupByList.Add(propertyName);
@@ -132,4 +126,8 @@ namespace 記帳本
 
 
     // 增加一個DTO能裝進所有類別的items(ditionary 在presenter時撈出來)
+
+
+    // 1008 89行trygetvalue 看看
+    // 
 }

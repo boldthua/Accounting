@@ -80,8 +80,8 @@ namespace 記帳本.Utility
             panel.Controls.Add(allCheck);
             foreach (string str in list)
             {
-                typeName = types.Contains(typeName) ? typeName : "Item";
-                CheckBox checkBox = new CheckBox() { Text = str, Tag = typeName, Margin = new Padding(0), AutoSize = true };
+                string tagName = types.Contains(typeName) ? typeName : "Item";
+                CheckBox checkBox = new CheckBox() { Text = str, Tag = tagName, Name = typeName, Margin = new Padding(0), AutoSize = true };
                 checkBox.CheckedChanged += CheckBoxes_CheckedChanged;
                 checkBox.CheckedChanged += handler;
                 panel.Controls.Add(checkBox);
@@ -94,7 +94,7 @@ namespace 記帳本.Utility
         {
             CheckBox allCheck = (CheckBox)sender;
 
-            if(allCheck.Checked)
+            if (allCheck.Checked)
             {
                 allCheck.Enabled = false;
                 allCheck.ForeColor = Color.LightGray;
@@ -126,13 +126,33 @@ namespace 記帳本.Utility
             // 後面全勾 checkall就勾 後面全沒勾 checkall照樣勾
             bool isSelectedAll = checkboxList.All(x => x.Checked);
             bool isNoSelected = checkboxList.All(x => !x.Checked);
-            if (isSelectedAll || isNoSelected)
+            if (isSelectedAll)
             {
                 allCheckBox.Checked = true;
             }
             else
             {
                 allCheckBox.Checked = false;
+            }
+
+            if (isNoSelected)
+            {
+                if (checkBox.Parent.Parent.Tag == "Detail")
+                {
+                    FlowLayoutPanel thisPanel = checkBox.Parent as FlowLayoutPanel;
+                    thisPanel.Visible = false;
+                    FlowLayoutPanel mainPanel = checkBox.Parent.Parent.Parent as FlowLayoutPanel;
+                    var relatedCBox = mainPanel.Controls.OfType<FlowLayoutPanel>()
+                                                    .FirstOrDefault(x => x.Tag == "Catagory")
+                                                    .Controls.OfType<CheckBox>()
+                                                    .FirstOrDefault(x => x.Text == checkBox.Name);
+                    relatedCBox.Checked = false;
+                }
+                else
+                {
+                    checkBox.Checked = true;
+                    MessageBox.Show("本區需至少選擇一項！");
+                }
             }
 
 
@@ -166,23 +186,17 @@ namespace 記帳本.Utility
                              .ToList()
                              .Where(x => x.Tag != "Category");
             FlowLayoutPanel ditailPanel = panels.FirstOrDefault(x => x.Tag == "Detail");
-            FlowLayoutPanel recipientPanel = panels.FirstOrDefault(x => x.Tag == "Recipient");
 
             bool allNotSelected = checkBox.Parent.Controls.OfType<CheckBox>().All(x => x.Checked == false);
             var currentPanel = ditailPanel.Controls.OfType<FlowLayoutPanel>().ToList().FirstOrDefault(x => x.Tag?.ToString() == checkBox.Text);
             currentPanel.Visible = checkBox.Checked;
+            CheckBox allCheck = currentPanel.Controls.OfType<CheckBox>().FirstOrDefault(x => x.Text == "全選");
 
-            if (currentPanel.Visible == false)
+            if (!checkBox.Checked)
                 currentPanel.Controls.OfType<CheckBox>().ToList().ForEach(x => x.Checked = false);
-
-            if (allNotSelected)
-            {
-                ditailPanel.Visible = false;
-            }
             else
-            {
-                ditailPanel.Visible = true;
-            }
+                allCheck.Checked = true;
+
             //foreach (FlowLayoutPanel flPanel in ditailPanel.Controls)
             //{
             //    if (flPanel.Tag == checkBox.Text)

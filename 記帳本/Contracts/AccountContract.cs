@@ -14,14 +14,14 @@ namespace 記帳本.Contracts
         public interface IAccountView // 應該只有給一包資料
         {
             // 顯示ExpenseDTO
-            void RenderDatas(List<AccountDTO> records);
+            void RenderDatas(List<AccountAnalyzeDTO> records);
             void PopulateMainCheckBox(AllItemData data);
         }
 
         public interface IAccountPresenter
         {
             // 拿ExpenseDTO
-            void GetRecord(DateTime start, DateTime end, Dictionary<string, List<string>> conditions);
+            void GetRecord(DateTime start, DateTime end, List<string> groupByList, Dictionary<string, List<string>> conditions);
             void GetAppDatas();
         }
     }

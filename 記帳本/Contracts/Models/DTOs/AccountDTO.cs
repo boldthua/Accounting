@@ -10,6 +10,7 @@ namespace 記帳本.Contracts.Models.DTOs
 {
     public class AccountDTO
     {
+
         public string Time { get; set; }
         public string Money { get; set; }
         [Record("類別")]
