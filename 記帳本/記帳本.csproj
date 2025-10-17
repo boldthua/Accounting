@@ -64,6 +64,7 @@
     <Compile Include="Attributes\ImageColumnAttribute.cs" />
     <Compile Include="Attributes\OrderAttribute.cs" />
     <Compile Include="Attributes\RecordAttribute.cs" />
+    <Compile Include="ChartBuilder\IChart.cs" />
     <Compile Include="Contracts\ChartAnalysisContract.cs" />
     <Compile Include="Contracts\AccountContract.cs" />
     <Compile Include="Contracts\AccoutingContract.cs" />

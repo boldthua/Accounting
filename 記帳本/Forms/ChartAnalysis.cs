@@ -305,3 +305,13 @@ namespace 記帳本
 
     }
 }
+
+// class 指揮者
+// private 圖形
+// 指揮者(圖形 圖形)
+//   this圖形 = 圖形
+
+// public void 畫圖
+//   圖形.drawPartA
+//   圖形.drawPartB
+//   ...
