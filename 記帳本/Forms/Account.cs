@@ -123,11 +123,6 @@ namespace 記帳本
         }
     }
 
-
-
-    // 增加一個DTO能裝進所有類別的items(ditionary 在presenter時撈出來)
-
-
     // 1008 89行trygetvalue 看看
     // 
 }

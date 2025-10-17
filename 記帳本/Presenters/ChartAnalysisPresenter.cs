@@ -10,21 +10,22 @@ using 記帳本.Contracts.Models.DTOs;
 using 記帳本.Repositories;
 using 記帳本.Repositories.Appdatas;
 using 記帳本.Repositories.Models;
-using 記帳本.Utility;
-using static 記帳本.Contracts.AddRecordContract;
-using static 記帳本.Contracts.AccoutContract;
 using 記帳本.Service;
+using 記帳本.Utility;
+using static 記帳本.Contracts.AccoutContract;
+using static 記帳本.Contracts.AddRecordContract;
+using static 記帳本.Contracts.ChartAnalysisContract;
 namespace 記帳本.Presenters
 {
 
-    public class AccountPresenter : IAccountPresenter
+    public class ChartAnalysisPresenter : IChartAnalysisPresenter
     {
-        IAccountView view;
+        IChartAnalysisView view;
         IRecordRepository repository;
         ICategoryRepository categoryRepository { get; set; }
         DataAnalysisService dataAnalysisService { get; set; }
 
-        public AccountPresenter(IAccountView view)
+        public ChartAnalysisPresenter(IChartAnalysisView view)
         {
             categoryRepository = new CategoryRepository();
             repository = new RecordRepository();
@@ -35,7 +36,6 @@ namespace 記帳本.Presenters
         public void GetRecord(DateTime start, DateTime end, List<string> groupByList, Dictionary<string, List<string>> conditions)
         {
             var renderData = dataAnalysisService.GetAccountAnalyzeDatas(start, end, groupByList, conditions);
-
             view.RenderDatas(renderData);
         }
 
