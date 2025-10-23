@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using 記帳本.Contracts.Models;
+using System.Windows.Forms.DataVisualization.Charting;
 using 記帳本.Contracts.Models.DTOs;
 
 namespace 記帳本.Contracts
@@ -14,14 +15,14 @@ namespace 記帳本.Contracts
         public interface IChartAnalysisView // 應該只有給一包資料
         {
             // 顯示ExpenseDTO
-            void RenderDatas(List<AccountAnalyzeDTO> records);
+            void RenderDatas(Chart chart);
             void PopulateMainCheckBox(AllItemData data);
         }
 
         public interface IChartAnalysisPresenter
         {
             // 拿ExpenseDTO
-            void GetRecord(DateTime start, DateTime end, List<string> groupByList, Dictionary<string, List<string>> conditions);
+            void GetRecord(KeyValuePair<DateTime, DateTime> startToEnd, string chartType, List<string> groupByList, Dictionary<string, List<string>> conditions, int width, int height);
             void GetAppDatas();
         }
     }

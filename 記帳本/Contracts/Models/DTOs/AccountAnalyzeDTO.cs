@@ -15,9 +15,8 @@ namespace 記帳本.Contracts.Models.DTOs
         [DisplayName("類別總金額")]
         public int ToTalMoney { get; set; }
         [DisplayName("消費日期")]
-        public List<string> dates { get; set; }
+        public List<string> dates { get; set; } // 1/1,1/1,1/2
         [DisplayName("單筆金額")]
-        public List<int> Money { get; set; }
-
+        public List<int> Money { get; set; } // 1/1:100,1/1:200, 1/2 200
     }
 }

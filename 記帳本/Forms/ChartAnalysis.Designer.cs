@@ -40,9 +40,10 @@ namespace 記帳本
             this.button1 = new System.Windows.Forms.Button();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // navBar1
@@ -126,18 +127,6 @@ namespace 記帳本
             this.comboBox1.TabIndex = 25;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "當月資料",
-            "與上個月相比",
-            "與前兩個月相比"});
-            this.comboBox2.Location = new System.Drawing.Point(740, 39);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(181, 23);
-            this.comboBox2.TabIndex = 26;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -158,13 +147,38 @@ namespace 記帳本
             this.label4.TabIndex = 21;
             this.label4.Text = "比較區間";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(739, 42);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(89, 19);
+            this.checkBox1.TabIndex = 26;
+            this.checkBox1.Tag = "1";
+            this.checkBox1.Text = "前一個月";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(828, 42);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(89, 19);
+            this.checkBox2.TabIndex = 27;
+            this.checkBox2.Tag = "2";
+            this.checkBox2.Text = "前兩個月";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
+            // 
             // ChartAnalysis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1066, 655);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.checkBox2);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
@@ -195,8 +209,9 @@ namespace 記帳本
         private Button button1;
         private FlowLayoutPanel flowLayoutPanel2;
         private ComboBox comboBox1;
-        private ComboBox comboBox2;
         private Label label3;
         private Label label4;
+        private CheckBox checkBox1;
+        private CheckBox checkBox2;
     }
 }

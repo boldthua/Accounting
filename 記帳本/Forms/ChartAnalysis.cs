@@ -26,10 +26,15 @@ namespace 記帳本
     public partial class ChartAnalysis : Form, IChartAnalysisView
     {
         IChartAnalysisPresenter presenter;
-        List<AccountAnalyzeDTO> records = new List<AccountAnalyzeDTO>();
+        List<AccountAnalyzeDTO> records;
         List<FlowLayoutPanel> itemFlPanelList = new List<FlowLayoutPanel>();
         FlowLayoutPanel recipientPanel = new FlowLayoutPanel();
-        string[] chartSorts = { "圓餅圖", "折線圖", "堆疊圖" };
+        new Dictionary<string, string> chartSorts = new Dictionary<string, string>
+        {
+            { "圓餅圖", "PieChart" },
+            { "折線圖", "LineChart" },
+            { "堆疊圖", "StackedColumn" }
+        };
 
         // conditions 用來維護最終要送去給 Presenter分析的資料
         // key為 食/衣/住/行/育/樂/支付方式/對象  value為每一個類型中有勾選的項目
@@ -44,47 +49,30 @@ namespace 記帳本
         {
             InitializeComponent();
             presenter = new ChartAnalysisPresenter(this);
-            comboBox1.DataSource = chartSorts;
+            comboBox1.DataSource = chartSorts.Keys;
             comboBox1.SelectedIndex = 0;
             presenter.GetAppDatas();
         }
 
-        public void RenderDatas(List<AccountAnalyzeDTO> records)
+        public void RenderDatas(Chart chart)
         {
-            this.records = records;
-            CreateChart(this.comboBox1.Text);
+            flowLayoutPanel2.Controls.Clear();
+            flowLayoutPanel2.Controls.Add(chart);
         }
 
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.records.Count() == 0)
+            if (this.records == null)
                 return;
-
-            CreateChart(this.comboBox1.Text);
-        }
-
-        // 這裡生一張圖出來。
-        private void CreateChart(string chartType)
-        {
-            flowLayoutPanel2.Controls.Clear();
-            Chart chart = null;
-
-            if (chartType == "圓餅圖")
-                chart = CreatePieChart(chartType);
-            if (chartType == "折線圖")
-                chart = CreateLineChart(chartType);
-            if (chartType == "堆疊圖")
-                chart = CreateStackedChart(chartType);
-
-            flowLayoutPanel2.Controls.Add(chart);
+            SetChart();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             this.DebounceTime(() =>
             {
-                presenter.GetRecord(dateTimePicker1.Value, dateTimePicker2.Value, groupByList, conditions);
+                SetChart();
             }, 1000);
         }
 
@@ -146,6 +134,7 @@ namespace 記帳本
 
         public Chart CreatePieChart(string chartType)
         {
+            List<AccountAnalyzeDTO> pieChartRecords = records;
             Chart chart = new Chart()
             {
                 Width = flowLayoutPanel2.Width,
@@ -166,8 +155,8 @@ namespace 記帳本
             };
             chart.ChartAreas.Add(area);
 
-            var group = records.Select(x => x.GroupByName).ToList();
-            var money = records.Select(x => (double)x.ToTalMoney).ToList();
+            var group = pieChartRecords.Select(x => x.GroupByName).ToList();
+            var money = pieChartRecords.Select(x => (double)x.ToTalMoney).ToList();
             string groupNameLabel = GetDisplayName<AccountAnalyzeDTO, string>(x => x.GroupByName); // "分析類別"
             string moneyLabel = GetDisplayName<AccountAnalyzeDTO, int>(x => x.ToTalMoney);              // "類別總金額"
 
@@ -207,12 +196,6 @@ namespace 記帳本
 
         public Chart CreateLineChart(string chartType)
         {
-            Chart chart = new Chart();
-            return chart;
-        }
-
-        public Chart CreateStackedChart(string chartType)
-        {
             Chart chart = new Chart()
             {
                 Width = flowLayoutPanel2.Width,
@@ -233,7 +216,87 @@ namespace 記帳本
             };
             chart.ChartAreas.Add(area);
 
-            foreach (var groupData in records)
+            for (int i = 0; i < records.Count; i++)
+            {
+                var series = new Series()
+                {
+                    Name = $"{i}個月資料",
+                    ChartType = SeriesChartType.Line,
+                    XValueType = ChartValueType.String,
+                    IsValueShownAsLabel = true,
+                    Label = "#VAL元",
+                    ChartArea = "main",
+                    Font = new Font(Font.FontFamily, 8f),
+                    Tag = i.ToString(),
+                };
+                List<int> dayCosts = new List<int>();
+                int daySpent = 0;
+
+
+
+                series.Points.DataBindXY(records[i][0].dates, records[i].Select(x => new
+                {
+                    DaySum =
+                                                                        }).ToList());
+                chart.Series.Add(series);            // 要得到每一筆x裡的money[i]加總的list 
+                var checkBox = this.Controls.OfType<CheckBox>()
+                                            .FirstOrDefault(cb => Equals(cb.Tag, series.Tag));
+                checkBox.Tag = series;
+            }
+
+            area.AxisX.Interval = 1;
+            area.AxisX.Title = "日期";
+            area.AxisX.TitleForeColor = Color.Blue;
+            area.AxisX.TitleFont = new Font("微軟正黑體", 12f);
+            area.AxisX.IsMarginVisible = true;          // 左右留白
+            area.AxisX.MajorGrid.Enabled = false;       // 讓畫面更乾淨
+
+            area.AxisY.Title = "金額(元)";
+            area.AxisY.TitleForeColor = Color.Blue;
+            area.AxisY.TitleFont = new Font("微軟正黑體", 12f);
+
+            var legend = new Legend("legend")
+            {
+                TitleBackColor = Color.Transparent,
+                BackColor = Color.Transparent,
+                TitleForeColor = Color.DarkRed,
+                TitleFont = new Font("微軟正黑體", 12f),
+                Font = new Font("微軟正黑體", 8f),
+                ForeColor = Color.BlueViolet,
+                DockedToChartArea = "main",      // 指定跟哪個 ChartArea 對齊
+                IsDockedInsideChartArea = false,  // ← 放在「外面」
+                Docking = Docking.Bottom,         // 在 ChartArea 的下方
+                Position = new ElementPosition(70, 10, 30, 90)
+            };
+            chart.Legends.Add(legend);
+            return chart;
+        }
+
+        public Chart CreateStackedChart(string chartType)
+        {
+            List<AccountAnalyzeDTO> pieChartRecords = records;
+
+            Chart chart = new Chart()
+            {
+                Width = flowLayoutPanel2.Width,
+                Height = flowLayoutPanel2.Height,
+                BackColor = Color.Transparent
+            };
+
+            var title = new Title(chartType)
+            {
+                Font = new Font("微軟正黑體", 14f, FontStyle.Regular),
+                Alignment = ContentAlignment.TopCenter
+            };
+            chart.Titles.Add(title);
+
+            ChartArea area = new ChartArea("main")
+            {
+                Position = new ElementPosition(0, 10, 70, 90)
+            };
+            chart.ChartAreas.Add(area);
+
+            foreach (var groupData in pieChartRecords)
             {
                 var series = new Series($"{groupData.GroupByName}")
                 {
@@ -302,7 +365,91 @@ namespace 記帳本
             return chart;
         }
 
+        private void CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var cb = (CheckBox)sender;
+            var s = cb.Tag as Series;
+            if (s == null) return;
 
+            s.Enabled = cb.Checked;
+        }
+
+        private List<KeyValuePair<DateTime, DateTime>> Get3Periods(KeyValuePair<DateTime, DateTime> period)
+        {
+            var periods = new List<KeyValuePair<DateTime, DateTime>>() { period };
+
+            periods.Add(OffsetPeriodByMonths(1, period));
+            periods.Add(OffsetPeriodByMonths(2, period));
+            return periods;
+        }
+
+        private KeyValuePair<DateTime, DateTime> OffsetPeriodByMonths(int monthsAgo, KeyValuePair<DateTime, DateTime> period)
+        {
+            DateTime startDay = period.Key;
+            DateTime endDay = period.Value;
+
+            DateTime ShiftStartByMonths_EndAligned(DateTime start, int m)
+            {
+                bool isFeb29 = (start.Month == 2 && start.Day == 29);
+
+                // 28（含）以下走「同日」，但 2/29 不能走這條
+                if (start.Day < 29 && !isFeb29)
+                    return start.AddMonths(-m);
+
+                // 其餘（含 2/29、30、31）走「月底對齊」：用距月底偏移量來對齊
+                int srcLast = DateTime.DaysInMonth(start.Year, start.Month);
+                int offsetFromEnd = srcLast - start.Day;
+
+                var target = start.AddMonths(-m);
+                int tgtLast = DateTime.DaysInMonth(target.Year, target.Month);
+                int targetDay = Math.Max(1, tgtLast - offsetFromEnd);
+
+                return new DateTime(target.Year, target.Month, targetDay, start.Hour, start.Minute, start.Second, start.Kind);
+            }
+
+            DateTime ShiftEndByMonths_Rule(DateTime d, int m)
+            {
+                bool isMonthEnd = d.Day == DateTime.DaysInMonth(d.Year, d.Month);
+                var target = d.AddMonths(-m);
+
+                if (isMonthEnd)
+                {
+                    // 尾日是月底 → 對齊到目標月的月底
+                    int tgtLast = DateTime.DaysInMonth(target.Year, target.Month);
+                    return new DateTime(target.Year, target.Month, tgtLast, d.Hour, d.Minute, d.Second, d.Kind);
+                }
+                else
+                {
+                    // 尾日不是月底 → 保留同日（AddMonths 會自動在小月夾到月底）
+                    return target;
+                }
+            }
+
+            var newStart = ShiftStartByMonths_EndAligned(startDay, monthsAgo);
+            var newEnd = ShiftEndByMonths_Rule(endDay, monthsAgo);
+
+            return new KeyValuePair<DateTime, DateTime>(newStart, newEnd);
+        }
+
+        private List<int> CountDailyMoney(List<AccountAnalyzeDTO> record)
+        {
+            record.GroupBy(x => x.dates)
+                  .Select(x =>
+                  {
+
+                  }
+
+                  );
+        }
+
+        private void SetChart()
+        {
+            int width = flowLayoutPanel2.Width;
+            int height = flowLayoutPanel2.Height;
+            var period = new KeyValuePair<DateTime, DateTime>(dateTimePicker1.Value, dateTimePicker2.Value);
+            chartSorts.TryGetValue(comboBox1.Text, out string chartType);
+            presenter.GetRecord(period, chartType, groupByList, conditions, width, height);
+        }
     }
 }
 

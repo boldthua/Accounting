@@ -12,9 +12,12 @@ using 記帳本.Repositories.Appdatas;
 using 記帳本.Repositories.Models;
 using 記帳本.Service;
 using 記帳本.Utility;
+using System.Windows.Forms.DataVisualization.Charting;
 using static 記帳本.Contracts.AccoutContract;
 using static 記帳本.Contracts.AddRecordContract;
 using static 記帳本.Contracts.ChartAnalysisContract;
+using 記帳本.Builders;
+
 namespace 記帳本.Presenters
 {
 
@@ -33,10 +36,15 @@ namespace 記帳本.Presenters
             this.view = view;
         }
 
-        public void GetRecord(DateTime start, DateTime end, List<string> groupByList, Dictionary<string, List<string>> conditions)
+        public void GetRecord(KeyValuePair<DateTime, DateTime> startToEnd, string chartType, List<string> groupByList, Dictionary<string, List<string>> conditions, int width, int height)
         {
-            var renderData = dataAnalysisService.GetAccountAnalyzeDatas(start, end, groupByList, conditions);
-            view.RenderDatas(renderData);
+            Chart chart = new Chart();
+            string chartName = $"記帳本.ChartBuilder.{chartType}Builder";
+            ChartBuilder chartBuilder = Activator.CreateInstance(Type.GetType(chartName), width, height) as ChartBuilder;
+
+            chartBuilder.
+
+            view.RenderDatas(chart);
         }
 
         public void GetAppDatas()

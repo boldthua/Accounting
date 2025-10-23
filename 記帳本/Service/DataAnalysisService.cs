@@ -19,6 +19,7 @@ namespace 記帳本.Service
         {
             this.recordRepository = recordRepository;
         }
+
         public List<AccountAnalyzeDTO> GetAccountAnalyzeDatas(DateTime start, DateTime end, List<string> groupByList, Dictionary<string, List<string>> conditions)
         {
             var props = typeof(RecordModel)
@@ -71,6 +72,31 @@ namespace 記帳本.Service
                 };
             }).ToList();
             return returnData;
+        }
+
+        public List<List<AccountAnalyzeDTO>> MakeDatasTheSameLong(List<List<AccountAnalyzeDTO>> records)
+        {
+            List<int> monthDays = records.Select(x => x.Sum(y => y.dates.Count())).ToList();
+            int maxDays = monthDays.Max();
+            foreach (var group in records)
+            {
+                foreach (var item in group)
+                {
+                    item.dates = new List<string>();
+                    item.Money = new List<int>();
+
+                    // 補 dates
+                    if (item.dates.Count < maxDays)
+                        item.dates.AddRange(Enumerable.Repeat("", maxDays - item.dates.Count));
+
+                    // 補 Money
+                    if (item.Money.Count < maxDays)
+                        item.Money.AddRange(Enumerable.Repeat(0, maxDays - item.Money.Count));
+                }
+            }
+
+            return records;
+
         }
     }
 }
