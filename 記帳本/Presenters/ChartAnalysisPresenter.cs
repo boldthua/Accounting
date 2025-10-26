@@ -38,11 +38,15 @@ namespace 記帳本.Presenters
 
         public void GetRecord(KeyValuePair<DateTime, DateTime> startToEnd, string chartType, List<string> groupByList, Dictionary<string, List<string>> conditions, int width, int height)
         {
-            Chart chart = new Chart();
-            string chartName = $"記帳本.ChartBuilder.{chartType}Builder";
+            string chartName = $"記帳本.Builders.{chartType}Builder";
             ChartBuilder chartBuilder = Activator.CreateInstance(Type.GetType(chartName), width, height) as ChartBuilder;
 
-            chartBuilder.
+            Chart chart = chartBuilder.setDates(startToEnd)
+                        .SetTitle(chartType)
+                        .SetSeries()
+                        .SetAxisXY()
+                        .SetLegend()
+                        .Build();
 
             view.RenderDatas(chart);
         }

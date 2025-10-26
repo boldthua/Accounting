@@ -49,7 +49,7 @@ namespace 記帳本
         {
             InitializeComponent();
             presenter = new ChartAnalysisPresenter(this);
-            comboBox1.DataSource = chartSorts.Keys;
+            comboBox1.DataSource = chartSorts.Keys.ToList();
             comboBox1.SelectedIndex = 0;
             presenter.GetAppDatas();
         }
@@ -60,7 +60,7 @@ namespace 記帳本
             flowLayoutPanel2.Controls.Add(chart);
         }
 
-
+        
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.records == null)
@@ -203,72 +203,72 @@ namespace 記帳本
                 BackColor = Color.Transparent
             };
 
-            var title = new Title(chartType)
-            {
-                Font = new Font("微軟正黑體", 14f, FontStyle.Regular),
-                Alignment = ContentAlignment.TopCenter
-            };
-            chart.Titles.Add(title);
+            //var title = new Title(chartType)
+            //{
+            //    Font = new Font("微軟正黑體", 14f, FontStyle.Regular),
+            //    Alignment = ContentAlignment.TopCenter
+            //};
+            //chart.Titles.Add(title);
 
-            ChartArea area = new ChartArea("main")
-            {
-                Position = new ElementPosition(0, 10, 70, 90)
-            };
-            chart.ChartAreas.Add(area);
+            //ChartArea area = new ChartArea("main")
+            //{
+            //    Position = new ElementPosition(0, 10, 70, 90)
+            //};
+            //chart.ChartAreas.Add(area);
 
-            for (int i = 0; i < records.Count; i++)
-            {
-                var series = new Series()
-                {
-                    Name = $"{i}個月資料",
-                    ChartType = SeriesChartType.Line,
-                    XValueType = ChartValueType.String,
-                    IsValueShownAsLabel = true,
-                    Label = "#VAL元",
-                    ChartArea = "main",
-                    Font = new Font(Font.FontFamily, 8f),
-                    Tag = i.ToString(),
-                };
-                List<int> dayCosts = new List<int>();
-                int daySpent = 0;
+            //for (int i = 0; i < records.Count; i++)
+            //{
+            //    var series = new Series()
+            //    {
+            //        Name = $"{i}個月資料",
+            //        ChartType = SeriesChartType.Line,
+            //        XValueType = ChartValueType.String,
+            //        IsValueShownAsLabel = true,
+            //        Label = "#VAL元",
+            //        ChartArea = "main",
+            //        Font = new Font(Font.FontFamily, 8f),
+            //        Tag = i.ToString(),
+            //    };
+            //    List<int> dayCosts = new List<int>();
+            //    int daySpent = 0;
 
 
 
-                series.Points.DataBindXY(records[i][0].dates, records[i].Select(x => new
-                {
-                    DaySum =
-                                                                        }).ToList());
-                chart.Series.Add(series);            // 要得到每一筆x裡的money[i]加總的list 
-                var checkBox = this.Controls.OfType<CheckBox>()
-                                            .FirstOrDefault(cb => Equals(cb.Tag, series.Tag));
-                checkBox.Tag = series;
-            }
+            //    series.Points.DataBindXY(records[i].dates, records[i].Select(x => new
+            //    {
+            //        DaySum =
+            //                                                            }).ToList());
+            //    chart.Series.Add(series);            // 要得到每一筆x裡的money[i]加總的list 
+            //    var checkBox = this.Controls.OfType<CheckBox>()
+            //                                .FirstOrDefault(cb => Equals(cb.Tag, series.Tag));
+            //    checkBox.Tag = series;
+            //}
 
-            area.AxisX.Interval = 1;
-            area.AxisX.Title = "日期";
-            area.AxisX.TitleForeColor = Color.Blue;
-            area.AxisX.TitleFont = new Font("微軟正黑體", 12f);
-            area.AxisX.IsMarginVisible = true;          // 左右留白
-            area.AxisX.MajorGrid.Enabled = false;       // 讓畫面更乾淨
+            //area.AxisX.Interval = 1;
+            //area.AxisX.Title = "日期";
+            //area.AxisX.TitleForeColor = Color.Blue;
+            //area.AxisX.TitleFont = new Font("微軟正黑體", 12f);
+            //area.AxisX.IsMarginVisible = true;          // 左右留白
+            //area.AxisX.MajorGrid.Enabled = false;       // 讓畫面更乾淨
 
-            area.AxisY.Title = "金額(元)";
-            area.AxisY.TitleForeColor = Color.Blue;
-            area.AxisY.TitleFont = new Font("微軟正黑體", 12f);
+            //area.AxisY.Title = "金額(元)";
+            //area.AxisY.TitleForeColor = Color.Blue;
+            //area.AxisY.TitleFont = new Font("微軟正黑體", 12f);
 
-            var legend = new Legend("legend")
-            {
-                TitleBackColor = Color.Transparent,
-                BackColor = Color.Transparent,
-                TitleForeColor = Color.DarkRed,
-                TitleFont = new Font("微軟正黑體", 12f),
-                Font = new Font("微軟正黑體", 8f),
-                ForeColor = Color.BlueViolet,
-                DockedToChartArea = "main",      // 指定跟哪個 ChartArea 對齊
-                IsDockedInsideChartArea = false,  // ← 放在「外面」
-                Docking = Docking.Bottom,         // 在 ChartArea 的下方
-                Position = new ElementPosition(70, 10, 30, 90)
-            };
-            chart.Legends.Add(legend);
+            //var legend = new Legend("legend")
+            //{
+            //    TitleBackColor = Color.Transparent,
+            //    BackColor = Color.Transparent,
+            //    TitleForeColor = Color.DarkRed,
+            //    TitleFont = new Font("微軟正黑體", 12f),
+            //    Font = new Font("微軟正黑體", 8f),
+            //    ForeColor = Color.BlueViolet,
+            //    DockedToChartArea = "main",      // 指定跟哪個 ChartArea 對齊
+            //    IsDockedInsideChartArea = false,  // ← 放在「外面」
+            //    Docking = Docking.Bottom,         // 在 ChartArea 的下方
+            //    Position = new ElementPosition(70, 10, 30, 90)
+            //};
+            //chart.Legends.Add(legend);
             return chart;
         }
 
@@ -431,16 +431,6 @@ namespace 記帳本
             return new KeyValuePair<DateTime, DateTime>(newStart, newEnd);
         }
 
-        private List<int> CountDailyMoney(List<AccountAnalyzeDTO> record)
-        {
-            record.GroupBy(x => x.dates)
-                  .Select(x =>
-                  {
-
-                  }
-
-                  );
-        }
 
         private void SetChart()
         {
