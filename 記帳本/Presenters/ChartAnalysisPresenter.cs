@@ -24,15 +24,11 @@ namespace 記帳本.Presenters
     public class ChartAnalysisPresenter : IChartAnalysisPresenter
     {
         IChartAnalysisView view;
-        IRecordRepository repository;
         ICategoryRepository categoryRepository { get; set; }
-        DataAnalysisService dataAnalysisService { get; set; }
 
         public ChartAnalysisPresenter(IChartAnalysisView view)
         {
             categoryRepository = new CategoryRepository();
-            repository = new RecordRepository();
-            dataAnalysisService = new DataAnalysisService(repository);
             this.view = view;
         }
 
@@ -41,8 +37,11 @@ namespace 記帳本.Presenters
             string chartName = $"記帳本.Builders.{chartType}Builder";
             ChartBuilder chartBuilder = Activator.CreateInstance(Type.GetType(chartName), width, height) as ChartBuilder;
 
-            Chart chart = chartBuilder.setDates(startToEnd)
+            Chart chart = chartBuilder
+                        .setDates(startToEnd)
                         .SetTitle(chartType)
+                        .FilterDates(conditions)
+                        .GroupByDates(groupByList)
                         .SetSeries()
                         .SetAxisXY()
                         .SetLegend()

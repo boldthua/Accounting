@@ -35,6 +35,18 @@ namespace 記帳本.Repositories.Models
             this.Picture2 = strs[7];
         }
 
+        public RecordModel(string date, string money)
+        {
+            Time = date;
+            Money = money;
+            Catagory = "";
+            Item = "";
+            Recipient = "";
+            Payment = "";
+            Picture1 = "";
+            Picture2 = "";
+        }
+
         public RecordModel()
         {
         }

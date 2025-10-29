@@ -34,10 +34,10 @@ namespace 記帳本.Builders
             };
             _chart.ChartAreas.Add(area);
         }
-        public ChartBuilder setDates(KeyValuePair<DateTime, DateTime> startToEnd)
+        public virtual ChartBuilder setDates(KeyValuePair<DateTime, DateTime> startToEnd)
         {
-            for (DateTime date = startToEnd.Key; date > startToEnd.Value; date = date.AddDays(-1))
-                _dates.Add(date.ToString("yyyy-mm-dd"));
+            for (DateTime date = startToEnd.Key; date <= startToEnd.Value; date = date.AddDays(1))
+                _dates.Add(date.ToString("yyyy-MM-dd"));
             _rowDates = _repository.GetRecords(startToEnd.Key, startToEnd.Value);
             return this;
         }
@@ -51,14 +51,14 @@ namespace 記帳本.Builders
             _chart.Titles.Add(title);
             return this;
         }
-        public ChartBuilder FilterDates(Dictionary<string, List<string>> conditions)
+        public virtual ChartBuilder FilterDates(Dictionary<string, List<string>> conditions)
         {
             var props = typeof(RecordModel)
             .GetProperties()
             .ToList();
             var filterProps = props.Where(x => conditions.ContainsKey(x.Name)).ToList();
             var allValues = conditions.Values.SelectMany(x => x).ToList();
-            var filter = _rowDates.Where(x => filterProps.All(y => allValues.Contains(y.GetValue(x).ToString()))).ToList();
+            _filterDates = _rowDates.Where(x => filterProps.All(y => allValues.Contains(y.GetValue(x).ToString()))).ToList();
             return this;
         }
         public abstract ChartBuilder GroupByDates(List<string> groupByList);
@@ -73,7 +73,7 @@ namespace 記帳本.Builders
                 BackColor = Color.Transparent,
                 TitleForeColor = Color.DarkRed,
                 TitleFont = new Font("微軟正黑體", 12f),
-                Font = new Font("微軟正黑體", 8f),
+                Font = new Font("微軟正黑體", 12f),
                 ForeColor = Color.BlueViolet,
                 DockedToChartArea = "main",      // 指定跟哪個 ChartArea 對齊
                 IsDockedInsideChartArea = false,  // ← 放在「外面」

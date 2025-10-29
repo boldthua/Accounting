@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -61,7 +62,8 @@ namespace 記帳本.Builders
                     dates = datesList,
                     Money = moneyList
                 };
-            }).ToDictionary(x=>x.GroupByName,x=>(x.dates,x.Money));
+            }).ToDictionary(x => x.GroupByName, x => (x.dates, x.Money));
+
             return this;
         }
         public override ChartBuilder SetSeries()
@@ -78,6 +80,16 @@ namespace 記帳本.Builders
                     Font = new Font("Arial", 6f)
                 };
                 series.Points.DataBindXY(groupData.Value.Item1, groupData.Value.Item2);
+                foreach (var p in series.Points)
+                {
+                    // 0 就視為空點
+                    if (p.YValues.Length > 0 && p.YValues[0] == 0)
+                    {
+                        p.IsEmpty = true;               // 不會畫出來，也不會有標籤
+                        p.Label = string.Empty;         // 保險起見清空
+                        p.IsValueShownAsLabel = false;
+                    }
+                }
                 _chart.Series.Add(series);
             }
             return this;
@@ -85,7 +97,7 @@ namespace 記帳本.Builders
 
         public override ChartBuilder SetAxisXY()
         {
-            var area = _chart.ChartAreas.FirstOrDefault(x=>x.Name == "main");
+            var area = _chart.ChartAreas.FirstOrDefault(x => x.Name == "main");
             area.AxisX.Interval = 1;
             area.AxisX.Title = "日期";
             area.AxisX.TitleForeColor = Color.Blue;

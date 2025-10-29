@@ -31,7 +31,6 @@ namespace 記帳本
         /// </summary>
         private void InitializeComponent()
         {
-            this.navBar1 = new 記帳本.NavBar();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
@@ -44,16 +43,10 @@ namespace 記帳本
             this.label4 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.navBar1 = new 記帳本.NavBar();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // navBar1
-            // 
-            this.navBar1.BackColor = System.Drawing.Color.White;
-            this.navBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.navBar1.Location = new System.Drawing.Point(0, 555);
-            this.navBar1.Name = "navBar1";
-            this.navBar1.Size = new System.Drawing.Size(1066, 100);
-            this.navBar1.TabIndex = 0;
             // 
             // flowLayoutPanel1
             // 
@@ -75,7 +68,7 @@ namespace 記帳本
             // dateTimePicker2
             // 
             this.dateTimePicker2.Location = new System.Drawing.Point(450, 25);
-            this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(2);
+            this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(200, 25);
             this.dateTimePicker2.TabIndex = 20;
@@ -83,7 +76,7 @@ namespace 記帳本
             // dateTimePicker1
             // 
             this.dateTimePicker1.Location = new System.Drawing.Point(215, 25);
-            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(2);
+            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(200, 25);
             this.dateTimePicker1.TabIndex = 19;
@@ -103,7 +96,7 @@ namespace 記帳本
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(943, 18);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(111, 32);
             this.button1.TabIndex = 17;
@@ -140,7 +133,7 @@ namespace 記帳本
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(661, 43);
+            this.label4.Location = new System.Drawing.Point(2, 3);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 15);
@@ -150,26 +143,51 @@ namespace 記帳本
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(739, 42);
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(80, 2);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(89, 19);
+            this.checkBox1.Size = new System.Drawing.Size(74, 19);
             this.checkBox1.TabIndex = 26;
             this.checkBox1.Tag = "1";
-            this.checkBox1.Text = "前一個月";
+            this.checkBox1.Text = "前 1 期";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
             // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(828, 42);
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.Location = new System.Drawing.Point(169, 2);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(89, 19);
+            this.checkBox2.Size = new System.Drawing.Size(74, 19);
             this.checkBox2.TabIndex = 27;
             this.checkBox2.Tag = "2";
-            this.checkBox2.Text = "前兩個月";
+            this.checkBox2.Text = "前 2 期";
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox_CheckedChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.checkBox2);
+            this.panel1.Controls.Add(this.checkBox1);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Location = new System.Drawing.Point(659, 39);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(261, 26);
+            this.panel1.TabIndex = 28;
+            this.panel1.Visible = false;
+            // 
+            // navBar1
+            // 
+            this.navBar1.BackColor = System.Drawing.Color.White;
+            this.navBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.navBar1.Location = new System.Drawing.Point(0, 555);
+            this.navBar1.Margin = new System.Windows.Forms.Padding(5);
+            this.navBar1.Name = "navBar1";
+            this.navBar1.Size = new System.Drawing.Size(1066, 100);
+            this.navBar1.TabIndex = 0;
             // 
             // ChartAnalysis
             // 
@@ -177,12 +195,10 @@ namespace 記帳本
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1066, 655);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.dateTimePicker2);
@@ -193,6 +209,8 @@ namespace 記帳本
             this.Name = "ChartAnalysis";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ChartAnalysis";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -213,5 +231,6 @@ namespace 記帳本
         private Label label4;
         private CheckBox checkBox1;
         private CheckBox checkBox2;
+        private Panel panel1;
     }
 }
